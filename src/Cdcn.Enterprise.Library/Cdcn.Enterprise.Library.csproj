@@ -4,8 +4,17 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<PackageId>Codecaine.Enterprise.Library</PackageId>
+	<Version>1.0.1</Version>
+	<Authors>Heemi Hanif</Authors>
+	<Company>Codecaine</Company>
+	<Description>Enterprise library for Codecaine applications.</Description>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageProjectUrl>https://github.com/mycodecaine/enterprise.library</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/mycodecaine/enterprise.library</RepositoryUrl>
+	<Tags>codecaine;enterprise;library</Tags>
   </PropertyGroup>
-
+	
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.4.1" />
 	<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
