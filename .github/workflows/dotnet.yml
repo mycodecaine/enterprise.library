@@ -1,5 +1,4 @@
 # This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
 name: .NET
 
@@ -26,13 +25,13 @@ jobs:
       run: dotnet restore
     
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --configuration Release --no-restore  # Ensure Release build
     
     - name: Test
       run: dotnet test --no-build --verbosity normal
     
     - name: Pack
-      run: dotnet pack --configuration Release --no-build --output ./nupkg
+      run: dotnet pack --configuration Release --no-build --output ./nupkg  # Pack from Release output
     
     - name: Publish to GitHub Packages
       env:
