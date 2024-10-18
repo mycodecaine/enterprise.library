@@ -401,3 +401,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /Cdcn.CaseTracker.WebApi/.config/dotnet-tools.json
+/nuget.config
