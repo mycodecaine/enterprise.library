@@ -16,19 +16,28 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    
     - name: Restore dependencies
       run: dotnet restore
+    
     - name: Build
       run: dotnet build --no-restore
+    
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output ./nupkg
-    - name: Publish
+    
+    - name: Publish to GitHub Packages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: dotnet nuget push ./nupkg/*.nupkg --source "github"
+      run: |
+        for file in ./nupkg/*.nupkg; do
+          dotnet nuget push "$file" --source "https://nuget.pkg.github.com/mycodecaine/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+        done
