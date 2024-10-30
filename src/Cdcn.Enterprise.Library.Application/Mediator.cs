@@ -1,6 +1,6 @@
 ﻿namespace Cdcn.Enterprise.Library.Application
 {
-    public class Class1
+    public class Mediator
     {
 
     }
