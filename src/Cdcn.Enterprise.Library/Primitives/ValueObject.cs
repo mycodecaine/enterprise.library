@@ -20,10 +20,10 @@
         public static bool operator !=(ValueObject a, ValueObject b) => !(a == b);
 
         /// <inheritdoc />
-        public bool Equals(ValueObject other) => !(other is null) && GetAtomicValues().SequenceEqual(other.GetAtomicValues());
+        public bool Equals(ValueObject? other) => !(other is null) && GetAtomicValues().SequenceEqual(other.GetAtomicValues());
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null)
             {

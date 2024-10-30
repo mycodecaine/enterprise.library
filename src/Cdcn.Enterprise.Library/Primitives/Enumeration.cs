@@ -35,7 +35,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
         /// Gets the enumeration values.
         /// </summary>
         /// <returns>The read-only collection of enumeration values.</returns>
-        public static IReadOnlyCollection<TEnum> List => EnumerationsDictionary.Value.Values.ToList();
+        public static IReadOnlyCollection<TEnum> List => [.. EnumerationsDictionary.Value.Values];
 
         /// <summary>
         /// Gets the value.
@@ -52,7 +52,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
         /// </summary>
         /// <param name="value">The enumeration value.</param>
         /// <returns>The enumeration instance that matches the specified value.</returns>
-        public static Maybe<TEnum> FromValue(int value) => EnumerationsDictionary.Value.TryGetValue(value, out TEnum enumeration)
+        public static Maybe<TEnum> FromValue(int value) => EnumerationsDictionary.Value.TryGetValue(value, out TEnum? enumeration)
                 ? Maybe<TEnum>.From(enumeration)
                 : Maybe<TEnum>.None;
 
@@ -81,7 +81,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
         public static bool operator !=(Enumeration<TEnum> a, Enumeration<TEnum> b) => !(a == b);
 
         /// <inheritdoc />
-        public bool Equals(Enumeration<TEnum> other)
+        public bool Equals(Enumeration<TEnum>? other)
         {
             if (other is null)
             {
@@ -92,7 +92,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {
@@ -108,7 +108,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
         }
 
         /// <inheritdoc />
-        public int CompareTo(Enumeration<TEnum> other) => other is null ? 1 : Value.CompareTo(other.Value);
+        public int CompareTo(Enumeration<TEnum>? other) => other is null ? 1 : Value.CompareTo(other.Value);
 
         /// <inheritdoc />
         public override int GetHashCode() => Value.GetHashCode();
@@ -144,10 +144,13 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
         /// <typeparam name="TFieldType">The field type.</typeparam>
         /// <param name="type">The type whose fields are being retrieved.</param>
         /// <returns>The fields of the specified type for the specified type.</returns>
-        private static List<TFieldType> GetFieldsOfType<TFieldType>(Type type) =>
-            type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+        private static List<TFieldType> GetFieldsOfType<TFieldType>(Type type)
+        {
+            return type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
                 .Where(fieldInfo => type.IsAssignableFrom(fieldInfo.FieldType))
-                .Select(fieldInfo => (TFieldType)fieldInfo.GetValue(null))
-                .ToList();
+                    .Select(fieldInfo => fieldInfo.GetValue(null))
+                    .OfType<TFieldType>()  // Filters out nulls and safely casts to TFieldType
+                    .ToList();
+        }
     }
 }

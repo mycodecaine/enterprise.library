@@ -34,8 +34,10 @@ namespace Cdcn.Enterprise.Library.Domain.Data
                         foreach (var next in filters.Skip(1))
                         {
                             var nextExpression = new ReplaceVisitor(result.Parameters[0], next.Parameters[0]).Visit(result.Body);
-
-                            result = Expression.Lambda<Func<T, bool>>(Expression.OrElse(nextExpression, next.Body), next.Parameters);
+                            if (nextExpression != null)
+                            {
+                                result = Expression.Lambda<Func<T, bool>>(Expression.OrElse(nextExpression, next.Body), next.Parameters);
+                            }
                         }
 
                         return result;
@@ -69,7 +71,10 @@ namespace Cdcn.Enterprise.Library.Domain.Data
                         {
                             var nextExpression = new ReplaceVisitor(result.Parameters[0], next.Parameters[0]).Visit(result.Body);
 
-                            result = Expression.Lambda<Func<T, bool>>(Expression.AndAlso(nextExpression, next.Body), next.Parameters);
+                            if (nextExpression != null)
+                            {
+                                result = Expression.Lambda<Func<T, bool>>(Expression.OrElse(nextExpression, next.Body), next.Parameters);
+                            }
                         }
 
                         return result;
@@ -87,7 +92,7 @@ namespace Cdcn.Enterprise.Library.Domain.Data
                 this.to = to;
             }
 
-            public override Expression Visit(Expression node)
+            public override Expression? Visit(Expression? node)
             {
                 return node == from ? to : base.Visit(node);
             }
