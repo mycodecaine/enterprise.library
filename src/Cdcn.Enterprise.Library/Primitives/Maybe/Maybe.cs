@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cdcn.Enterprise.Library.Domain.Maybe
+namespace Cdcn.Enterprise.Library.Domain.Primitives.Maybe
 {
     public sealed class Maybe<T> : IEquatable<Maybe<T>>
     {

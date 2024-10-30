@@ -1,4 +1,5 @@
-﻿using Cdcn.Enterprise.Library.Logging.Correlation;
+﻿
+using Cdcn.Enterprise.Library.Domain.Common;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -19,12 +20,11 @@ namespace Cdcn.Enterprise.Library.Domain.Events
 
     public abstract class BaseDomainEventHandler<TDomainEvent> : IDomainEventHandler<TDomainEvent> where TDomainEvent : IDomainEvent
     {
-        private readonly ICorrelationIdGenerator _correlationIdGenerator;
 
         protected BaseDomainEventHandler(ICorrelationIdGenerator correlationIdGenerator)
         {
-            _correlationIdGenerator = correlationIdGenerator;
-            CorrelationId = _correlationIdGenerator.Get();
+
+            CorrelationId = correlationIdGenerator.Get();
         }
 
         public abstract Task Handle(TDomainEvent notification, CancellationToken cancellationToken);

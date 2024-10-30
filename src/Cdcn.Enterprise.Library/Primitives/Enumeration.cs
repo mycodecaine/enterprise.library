@@ -1,4 +1,4 @@
-﻿using Cdcn.Enterprise.Library.Domain.Maybe;
+﻿using Cdcn.Enterprise.Library.Domain.Primitives.Maybe;
 using System.Reflection;
 namespace Cdcn.Enterprise.Library.Domain.Primitives
 {

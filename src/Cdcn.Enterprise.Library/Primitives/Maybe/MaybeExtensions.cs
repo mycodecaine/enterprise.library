@@ -1,6 +1,6 @@
 ﻿using Cdcn.Enterprise.Library.Domain.Primitives;
 
-namespace Cdcn.Enterprise.Library.Domain.Maybe
+namespace Cdcn.Enterprise.Library.Domain.Primitives.Maybe
 {
     public static class MaybeExtensions
     {

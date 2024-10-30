@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	<PackageId>Codecaine.Enterprise.Library</PackageId>
+	<TargetFramework>net8.0</TargetFramework>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
+	<PackageId>Codecaine.Enterprise.Library.Domain</PackageId>
 	<Version>1.0.2</Version>
 	<Authors>Heemi Hanif</Authors>
 	<Company>Codecaine</Company>
-	<Description>Enterprise library for Codecaine applications.</Description>
+	<Description>Enterprise Domain library for Codecaine applications.</Description>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageProjectUrl>https://github.com/mycodecaine/enterprise.library</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/mycodecaine/enterprise.library</RepositoryUrl>
@@ -16,7 +16,7 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="12.4.1" />
+	<PackageReference Include="MediatR" Version="12.4.1" />
 	<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
 	<PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
 	<PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
