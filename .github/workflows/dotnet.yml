@@ -29,6 +29,8 @@ jobs:
     
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      env:
+        DOTNET_TEST_FILTER: NUnit # Specify NUnit explicitly if required
     
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output ./nupkg  # Pack from Release output
