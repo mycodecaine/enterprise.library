@@ -1,13 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Cdcn.Enterprise.Library\Cdcn.Enterprise.Library.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageId>Codecaine.Enterprise.Library.Application</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Heemi Hanif</Authors>
+		<Company>Codecaine</Company>
+		<Description>Enterprise Application library for Codecaine applications.</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/mycodecaine/enterprise.library</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/mycodecaine/enterprise.library</RepositoryUrl>
+		<Tags>codecaine;enterprise;library;application</Tags>
+	</PropertyGroup>
 
 </Project>
