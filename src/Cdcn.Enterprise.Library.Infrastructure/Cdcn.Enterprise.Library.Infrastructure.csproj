@@ -31,8 +31,16 @@
 		<PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
 		<PackageReference Include="StackExchange.Redis" Version="2.8.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+		<PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+		<PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Cdcn.Enterprise.Library.Application\Cdcn.Enterprise.Library.Application.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Logging\" />
 	</ItemGroup>
 </Project>
