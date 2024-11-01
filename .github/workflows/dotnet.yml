@@ -25,15 +25,13 @@ jobs:
       run: dotnet restore
     
     - name: Build
-      run: dotnet build --configuration Release --no-restore  # Ensure Release build
-    
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-      env:
-        DOTNET_TEST_FILTER: NUnit # Specify NUnit explicitly if required
-    
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Run Tests
+      run: dotnet test ./test/Cdcn.Enterprise.Library.Tests/Cdcn.Enterprise.Library.Tests.csproj --configuration Release --no-build --verbosity normal
+
     - name: Pack
-      run: dotnet pack --configuration Release --no-build --output ./nupkg  # Pack from Release output
+      run: dotnet pack --configuration Release --no-build --output ./nupkg
     
     - name: Publish to GitHub Packages
       env:
