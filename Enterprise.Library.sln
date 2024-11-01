@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cdcn.Enterprise.Library.App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cdcn.Enterprise.Library.Domain", "src\Cdcn.Enterprise.Library.Domain\Cdcn.Enterprise.Library.Domain.csproj", "{14A2EC34-D8C0-4830-AD4D-DD2DABADCF06}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CF8FE606-4710-4F00-B60D-CCB14AAB6F39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cdcn.Enterprise.Library.Tests", "test\Cdcn.Enterprise.Library.Tests\Cdcn.Enterprise.Library.Tests.csproj", "{2DBE3C35-04D2-4BD9-8E5F-D84381E25D91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,10 @@ Global
 		{14A2EC34-D8C0-4830-AD4D-DD2DABADCF06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14A2EC34-D8C0-4830-AD4D-DD2DABADCF06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14A2EC34-D8C0-4830-AD4D-DD2DABADCF06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DBE3C35-04D2-4BD9-8E5F-D84381E25D91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DBE3C35-04D2-4BD9-8E5F-D84381E25D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DBE3C35-04D2-4BD9-8E5F-D84381E25D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DBE3C35-04D2-4BD9-8E5F-D84381E25D91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +44,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A31D3344-87A5-430B-9EA0-E11CF9DA4E06} = {1B8480B0-E54D-4A22-A544-B664E78C6959}
 		{14A2EC34-D8C0-4830-AD4D-DD2DABADCF06} = {1B8480B0-E54D-4A22-A544-B664E78C6959}
+		{2DBE3C35-04D2-4BD9-8E5F-D84381E25D91} = {CF8FE606-4710-4F00-B60D-CCB14AAB6F39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7360853-FB80-40D8-8C16-E98E033ED5CA}
