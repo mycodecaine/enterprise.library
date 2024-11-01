@@ -40,7 +40,7 @@ namespace Cdcn.Enterprise.Library.Tests.Domain.Primitives
             SampleValueObject? nullValueObject = null;
 
             Assert.IsFalse(valueObject == nullValueObject);
-            Assert.IsTrue(nullValueObject == null);
+            Assert.IsNull(nullValueObject);
         }
 
         [Test]
