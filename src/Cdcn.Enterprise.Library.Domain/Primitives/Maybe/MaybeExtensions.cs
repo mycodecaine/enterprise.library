@@ -26,9 +26,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives.Maybe
         {
             Maybe<TIn> maybe = await resultTask;
 
-           
-
-            return maybe != null ? onSuccess(maybe.Value) : onFailure(maybe.Error);
+            return maybe.HasValue ? onSuccess(maybe.Value) : onFailure(maybe.Error);
         }
     }
 }
