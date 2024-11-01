@@ -1,5 +1,3 @@
-# This workflow will build a .NET project
-
 name: .NET
 
 on:
@@ -25,13 +23,37 @@ jobs:
       run: dotnet restore
     
     - name: Build
-      run: dotnet build --configuration Release --no-restore  # Ensure Release build
-    
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-    
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Run Tests with Coverage Collection
+      run: dotnet test ./test/**/*.csproj --configuration Release --no-build --collect:"XPlat Code Coverage"
+
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+    - name: Generate Code Coverage Report
+      run: reportgenerator "-reports:**/TestResults/**/coverage.cobertura.xml" "-targetdir:coveragereport" -reporttypes:Html
+      env:
+        PATH: ${{ env.PATH }}:/home/runner/.dotnet/tools
+
+    - name: Upload Code Coverage Report
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: code-coverage-report
+        path: coveragereport
+
+    - name: Upload Coverage to Codecov
+      if: success()
+      uses: codecov/codecov-action@v3
+      with:
+        files: "**/TestResults/**/coverage.cobertura.xml"  # Codecov will look for the cobertura report
+        token: ${{ secrets.CODECOV_TOKEN }}  # Only for private repos
+        flags: unittests
+        fail_ci_if_error: true
+
     - name: Pack
-      run: dotnet pack --configuration Release --no-build --output ./nupkg  # Pack from Release output
+      run: dotnet pack --configuration Release --no-build --output ./nupkg
     
     - name: Publish to GitHub Packages
       env:
