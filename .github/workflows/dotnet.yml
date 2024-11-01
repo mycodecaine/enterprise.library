@@ -43,6 +43,15 @@ jobs:
         name: code-coverage-report
         path: coveragereport
 
+    - name: Upload Coverage to Codecov
+      if: success()
+      uses: codecov/codecov-action@v3
+      with:
+        files: "**/TestResults/**/coverage.cobertura.xml"  # Codecov will look for the cobertura report
+        token: ${{ secrets.CODECOV_TOKEN }}  # Only for private repos
+        flags: unittests
+        fail_ci_if_error: true
+
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output ./nupkg
     
