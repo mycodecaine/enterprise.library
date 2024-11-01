@@ -33,7 +33,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: code-coverage-report
-        path: $(Agent.TempDirectory)/TestResults
+        path: '**/TestResults'  # Use wildcard to locate all TestResults folders
 
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output ./nupkg
