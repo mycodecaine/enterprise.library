@@ -93,6 +93,25 @@ namespace Cdcn.Enterprise.Library.Tests.Domain.Primitives
             var nonValueObject = new List<string>();
 
             Assert.IsFalse(valueObject.Equals(nonValueObject));
+        }    
+
+
+        [Test]
+        public void Equals_ShouldReturnTrue_WhenSameTypeAndEqualValues()
+        {
+            var valueObject1 = new SampleValueObject(1, "Test");
+            var valueObject2 = new SampleValueObject(1, "Test");
+
+            Assert.IsTrue(valueObject1.Equals(valueObject2)); // Covers the equality check
+        }
+
+        [Test]
+        public void Equals_ShouldReturnFalse_WhenSameTypeAndDifferentValues()
+        {
+            var valueObject1 = new SampleValueObject(1, "Test");
+            var valueObject2 = new SampleValueObject(2, "Test");
+
+            Assert.IsFalse(valueObject1.Equals(valueObject2)); // Covers the inequality check
         }
     }
 
