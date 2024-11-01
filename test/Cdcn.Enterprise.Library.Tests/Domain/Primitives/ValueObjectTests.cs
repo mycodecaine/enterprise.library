@@ -67,6 +67,31 @@ namespace Cdcn.Enterprise.Library.Tests.Domain.Primitives
             var valueObject2 = new SampleValueObject(2, "Test");
 
             Assert.AreNotEqual(valueObject1.GetHashCode(), valueObject2.GetHashCode());
+        }     
+
+        [Test]
+        public void Equals_ShouldReturnFalse_WhenComparedToNull()
+        {
+            var valueObject = new SampleValueObject(1, "Test");
+            Assert.IsFalse(valueObject.Equals(null));
+        }
+
+        [Test]
+        public void Equals_ShouldReturnFalse_WhenComparedToDifferentType()
+        {
+            var valueObject = new SampleValueObject(1, "Test");
+            var differentTypeObject = new object();
+
+            Assert.IsFalse(valueObject.Equals(differentTypeObject));
+        }
+
+        [Test]
+        public void Equals_ShouldReturnFalse_WhenComparedToNonValueObject()
+        {
+            var valueObject = new SampleValueObject(1, "Test");
+            var nonValueObject = new List<string>();
+
+            Assert.IsFalse(valueObject.Equals(nonValueObject));
         }
     }
 
