@@ -38,9 +38,9 @@ namespace Cdcn.Enterprise.Library.Tests.Domain.Primitives
         {
             var valueObject = new SampleValueObject(1, "Test");
             SampleValueObject? nullValueObject = null;
-           
+
             Assert.IsFalse(valueObject == nullValueObject);
-            Assert.IsNull(nullValueObject);
+            Assert.IsTrue(nullValueObject == null);
         }
 
         [Test]
@@ -48,6 +48,7 @@ namespace Cdcn.Enterprise.Library.Tests.Domain.Primitives
         {
             var valueObject = new SampleValueObject(1, "Test");
 
+            // Assert that valueObject is equal to itself
             Assert.AreEqual(valueObject, valueObject);
         }
 
@@ -67,7 +68,7 @@ namespace Cdcn.Enterprise.Library.Tests.Domain.Primitives
             var valueObject2 = new SampleValueObject(2, "Test");
 
             Assert.AreNotEqual(valueObject1.GetHashCode(), valueObject2.GetHashCode());
-        }     
+        }
 
         [Test]
         public void Equals_ShouldReturnFalse_WhenComparedToNull()
@@ -94,6 +95,7 @@ namespace Cdcn.Enterprise.Library.Tests.Domain.Primitives
             Assert.IsFalse(valueObject.Equals(nonValueObject));
         }
     }
+
 
     public class SampleValueObject : ValueObject
     {
