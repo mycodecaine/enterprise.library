@@ -37,7 +37,7 @@ namespace Cdcn.Enterprise.Library.Logging
                     {
                         AutoRegisterTemplate = true,
                         AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv8,
-                        IndexFormat = "Sportivo-Logs-{0:yyyy.MM.dd}",
+                        IndexFormat = $"{env.ApplicationName}-Logs-{0:yyyy.MM.dd}",
                         MinimumLogEventLevel = LogEventLevel.Debug
                     });
             }
