@@ -15,7 +15,7 @@ using Cdcn.Enterprise.Library.Infrastructure.Relational.Extensions;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Relational
 {
-    public abstract class AppDbContext : DbContext, IDbContext, IUnitOfWork
+    public  class AppDbContext : DbContext, IDbContext, IUnitOfWork
     {
         private readonly IDateTime _dateTime;
         private readonly IMediator _mediator;
