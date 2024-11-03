@@ -10,7 +10,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 
-namespace Cdcn.Enterprise.Library.Infrastructure.Middleware
+namespace Cdcn.Enterprise.Library.Infrastructure.WebApi
 {
     public class ExceptionHandlerMiddleware
     {
@@ -68,7 +68,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Middleware
         /// <returns>The HTTP response that is modified based on the exception.</returns>
         private static async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
         {
-            (HttpStatusCode httpStatusCode, IReadOnlyCollection<Error> errors) = GetHttpStatusCodeAndErrors(exception);
+            (var httpStatusCode, var errors) = GetHttpStatusCodeAndErrors(exception);
 
             httpContext.Response.ContentType = "application/json";
 
@@ -79,7 +79,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Middleware
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            string response = JsonSerializer.Serialize(new ErrorResponse(errors), serializerOptions);
+            var response = JsonSerializer.Serialize(new ErrorResponse(errors), serializerOptions);
 
             await httpContext.Response.WriteAsync(response);
         }
