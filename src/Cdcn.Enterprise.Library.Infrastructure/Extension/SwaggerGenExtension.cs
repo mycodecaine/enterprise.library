@@ -1,13 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Cdcn.Enterprise.Library.Infrastructure
+namespace Cdcn.Enterprise.Library.Infrastructure.Extension
 {
-    public static class SwaggerGen
+    public static class SwaggerGenExtension
     {
         public static IServiceCollection AddJwtSwaggerGen(this IServiceCollection services)
         {
+            services.AddSwaggerGen();
             services.AddSwaggerGen(options =>
             {
                 // add JWT Authentication

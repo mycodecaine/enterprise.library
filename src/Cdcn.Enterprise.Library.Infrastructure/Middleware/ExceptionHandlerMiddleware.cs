@@ -10,7 +10,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 
-namespace Cdcn.Enterprise.Library.Infrastructure.WebApi
+namespace Cdcn.Enterprise.Library.Infrastructure.Middleware
 {
     public class ExceptionHandlerMiddleware
     {
@@ -128,17 +128,5 @@ namespace Cdcn.Enterprise.Library.Infrastructure.WebApi
             };
     }
 
-    /// <summary>
-    /// Contains extension methods for configuring the exception handler middleware.
-    /// </summary>
-    public static class ExceptionHandlerMiddlewareExtensions
-    {
-        /// <summary>
-        /// Configure the custom exception handler middleware.
-        /// </summary>
-        /// <param name="builder">The application builder.</param>
-        /// <returns>The configured application builder.</returns>
-        public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder builder)
-            => builder.UseMiddleware<ExceptionHandlerMiddleware>();
-    }
+
 }

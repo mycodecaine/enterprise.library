@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>Codecaine.Enterprise.Library.Infrastructure</PackageId>
-		<Version>1.0.3</Version>
+		<Version>1.0.4</Version>
 		<Authors>Heemi Hanif</Authors>
 		<Company>Codecaine</Company>
 		<Description>Enterprise Infrastructure library for Codecaine applications.</Description>
@@ -51,6 +51,5 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Logging\" />
-	  <Folder Include="Middleware\" />
 	</ItemGroup>
 </Project>
