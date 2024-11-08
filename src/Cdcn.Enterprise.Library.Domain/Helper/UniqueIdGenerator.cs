@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -9,14 +10,25 @@ namespace Cdcn.Enterprise.Library.Domain.Helper
 {
     internal class UniqueIdGenerator
     {
-        public static string UniqueId => Generate();
+        private static readonly object _lock = new object();
+
+        public static string UniqueId
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return Generate();
+                }
+            }
+        }
         public static string Generate()
         {
-            // Step 1: Get the current date and time
-            DateTime now = DateTime.Now;
+            long timestamp = Stopwatch.GetTimestamp(); // Provides a much finer-grained timestamp than DateTime.Now
 
-            // Step 2: Format the date and time to a string
-            string dateTimeString = now.ToString("yyyyMMddHHmmssffff");
+            // Step 2: Convert timestamp to string and append a GUID to ensure uniqueness
+            string dateTimeString = timestamp.ToString() + Guid.NewGuid().ToString("N").Substring(0, 4);
+
 
             // Step 3: Create a hash of the dateTimeString
             using (MD5 md5 = MD5.Create())
