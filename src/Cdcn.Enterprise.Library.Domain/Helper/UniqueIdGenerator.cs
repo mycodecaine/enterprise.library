@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cdcn.Enterprise.Library.Domain.Helper
 {
-    internal class UniqueIdGenerator
+    public static class UniqueIdGenerator
     {
         private static readonly object _lock = new object();
 
