@@ -1,22 +1,18 @@
-﻿using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Contracts;
-using Cdcn.Enterprise.Library.Application.Core.Abstraction.Caching;
+﻿using Cdcn.Enterprise.Library.Application.Core.Abstraction.Caching;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication.Setting;
-using Cdcn.Enterprise.Library.Infrastructure.Extension;
 using MediatR;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Moq;
 using Moq.Protected;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 
 namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
 {
-
-
-
-
-
     [TestFixture]
     public class AuthenticationProviderTests
     {
@@ -60,20 +56,41 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             );
         }
 
+        public static string GenerateMockJwtToken(string userId)
+        {
+            // Define the secret key used to sign the token (this should match your actual key)
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication"));
+            var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key"));
+            //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+
+            // Add claims to the token, if any
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Sub, userId),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            // Add other claims here if needed
+        };
+
+            // Define the token
+            var token = new JwtSecurityToken(
+                issuer: "testIssuer",
+                audience: "testAudience",
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(30),
+                signingCredentials: signingCredentials);
+
+            // Generate token string
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
         [Test]
         public async Task Login_ShouldReturnSuccess_WhenValidCredentials()
         {
-
-            // Arrange
-            var expectedToken = new TokenResponse("access_token", "refresh_token", DateTime.UtcNow.AddMinutes(30), DateTime.UtcNow.AddMinutes(60), Guid.NewGuid());
-
-            // Generate a mock JWT token (a simple one for testing purposes)
-            var jwtHeader = Convert.ToBase64String(Encoding.UTF8.GetBytes("{\"alg\":\"HS256\",\"typ\":\"JWT\"}"));
-            var jwtPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes("{\"sub\":\"" + expectedToken.Token + "\",\"exp\":" + (DateTime.UtcNow.AddMinutes(30).Ticks) + "}"));
-            var jwtSignature = "mock_signature"; // For testing, the signature doesn't need to be valid
-
-            var jwtToken = $"{jwtHeader}.{jwtPayload}.{jwtSignature}"; // Combine header, payload, and signature
-
+            var userId = Guid.NewGuid().ToString(); 
+            var jwtToken = GenerateMockJwtToken(userId);
             // Mock HttpMessageHandler
             var mockHandler = new Mock<HttpMessageHandler>();
             mockHandler
@@ -81,7 +98,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    Content = new StringContent($"{{\"access_token\": \"{jwtToken}\", \"expires_in\": 3600, \"refresh_expires_in\": 7200}}", Encoding.UTF8, "application/json")
+                    Content = new StringContent($"{{\"access_token\": \"{jwtToken}\",\"refresh_token\": \"{{jwtToken}}\", \"expires_in\": 3600, \"refresh_expires_in\": 7200}}", Encoding.UTF8, "application/json")
                 });
 
             // Use the mock handler to create an HttpClient
@@ -94,28 +111,80 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             // Mock CreateClientWithPolicy method to return the HttpClient
             _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(mockHttpClient);
 
-                // Mock GetAdminAccessToken to return a valid token
-                _mockCachingService.Setup(x => x.CacheItemExists(It.IsAny<string>())).Returns(false);
-                _mockCachingService.Setup(x => x.SetCacheItem(It.IsAny<string>(), It.IsAny<string>(),null)).Verifiable();
+            // Mock GetAdminAccessToken to return a valid token
+            _mockCachingService.Setup(x => x.CacheItemExists(It.IsAny<string>())).Returns(false);
+            _mockCachingService.Setup(x => x.SetCacheItem(It.IsAny<string>(), It.IsAny<string>(), null)).Verifiable();
 
-                // Act
-                var result = await _authenticationProvider.Login("adminUser", "adminPassword");
+            // Act
+            var result = await _authenticationProvider.Login("adminUser", "adminPassword");
 
-                // Assert
-                Assert.IsTrue(result.IsSuccess);
-                Assert.AreEqual(expectedToken.Token, result.Value.Token);
-                _mockCachingService.Verify();
+            // Assert
+            Assert.IsTrue(result.IsSuccess);
+            Assert.AreEqual(result.Value.Token,jwtToken);
+            Assert.AreEqual( result.Value.UserId.ToString(), userId);
             
+
+        }
+
+        [Test]
+        public async Task Login_ShouldReturnFailure_WhenSubIdWasNotSet()
+        {
+            var userId = "notvalid";
+            var jwtToken = GenerateMockJwtToken(userId);
+            // Mock HttpMessageHandler
+            var mockHandler = new Mock<HttpMessageHandler>();
+            mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent($"{{\"access_token\": \"{jwtToken}\",\"refresh_token\": \"{{jwtToken}}\", \"expires_in\": 3600, \"refresh_expires_in\": 7200}}", Encoding.UTF8, "application/json")
+                });
+
+            // Use the mock handler to create an HttpClient
+            var mockHttpClient = new HttpClient(mockHandler.Object)
+            {
+                BaseAddress = new Uri("https://example.com")  // Set a base URI
+            };
+
+
+            // Mock CreateClientWithPolicy method to return the HttpClient
+            _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(mockHttpClient);
+
+            // Mock GetAdminAccessToken to return a valid token
+            _mockCachingService.Setup(x => x.CacheItemExists(It.IsAny<string>())).Returns(false);
+            _mockCachingService.Setup(x => x.SetCacheItem(It.IsAny<string>(), It.IsAny<string>(), null)).Verifiable();
+
+            // Act
+            var result = await _authenticationProvider.Login("invalidUser", "wrongPassword");
+
+            // Assert
+            Assert.IsTrue(result.IsFailure);
+            Assert.AreEqual(AuthenticationErrors.SubIdNotExist, result.Error);
         }
 
         [Test]
         public async Task Login_ShouldReturnFailure_WhenInvalidCredentials()
         {
-            // Arrange
-            _mockHttpClientFactory.Setup(x => x.CreateClientWithPolicy())
-                .Returns(new Mock<HttpClient>().Object);
+           
+            // Mock HttpMessageHandler
+            var mockHandler = new Mock<HttpMessageHandler>();
+            mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.Unauthorized))
+                ;
 
-            // Mock HttpClient failure
+            // Use the mock handler to create an HttpClient
+            var mockHttpClient = new HttpClient(mockHandler.Object)
+            {
+                BaseAddress = new Uri("https://example.com")  // Set a base URI
+            };
+
+
+            // Mock CreateClientWithPolicy method to return the HttpClient
+            _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(mockHttpClient);
+            // Mock GetAdminAccessToken to return a valid token
             _mockCachingService.Setup(x => x.CacheItemExists(It.IsAny<string>())).Returns(false);
             _mockCachingService.Setup(x => x.SetCacheItem(It.IsAny<string>(), It.IsAny<string>(), null)).Verifiable();
 

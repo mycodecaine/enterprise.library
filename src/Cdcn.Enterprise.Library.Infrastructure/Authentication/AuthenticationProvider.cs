@@ -127,7 +127,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
                 var accessToken = content["access_token"].ToString();
                 var sub = JwtHelper.GetSubId(accessToken);
                 if(sub == Guid.Empty)
-                    Result.Failure<TokenResponse>(AuthenticationErrors.SubIdNotExist);
+                   return Result.Failure<TokenResponse>(AuthenticationErrors.SubIdNotExist);
                 var newtoken = new TokenResponse(accessToken, content["refresh_token"].ToString(), tokenExpired, refreshtokenExpired, sub);
                 await _mediator.Publish(new UserLogedInProviderEvent(username, true, ""));
                 return Result.Success<TokenResponse>(newtoken);
