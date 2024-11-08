@@ -37,6 +37,10 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             "Authentication.SubIdNotExist",
             "Token SubId is not valid");
 
+        public static Error UserNameAlreadyExist => new Error(
+            "Authentication.UserNameAlreadyExist",
+            "The specified username already exist.");
+
     }
 
     

@@ -148,6 +148,13 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
         public async Task<Result<TokenResponse>> CreateUser(string username, string email, string firstName, string lastName, string password)
         {
+
+            var userNameVerify = await GetIdByUserName(username);
+            if (userNameVerify.IsSuccess)
+            {
+                return Result.Failure<TokenResponse>(AuthenticationErrors.UserNameAlreadyExist);
+            }
+
             var client = _httpClientFactory.CreateClientWithPolicy();
             var userEndpoint = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/users";
             var  accesstoken = await GetAdminAccessToken();
@@ -188,6 +195,8 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
             return Result.Failure<TokenResponse>(AuthenticationErrors.InvalidUserNameOrPassword);
         }
+
+
 
         public async Task<Result<string>> GetIdByUserName(string userName)
         {
