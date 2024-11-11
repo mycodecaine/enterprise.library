@@ -89,7 +89,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
         [Test]
         public async Task Login_ShouldReturnSuccess_WhenValidCredentials()
         {
-            var userId = Guid.NewGuid().ToString(); 
+            var userId = Guid.NewGuid().ToString();
             var jwtToken = GenerateMockJwtToken(userId);
             // Mock HttpMessageHandler
             var mockHandler = new Mock<HttpMessageHandler>();
@@ -120,9 +120,9 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
 
             // Assert
             Assert.IsTrue(result.IsSuccess);
-            Assert.AreEqual(result.Value.Token,jwtToken);
-            Assert.AreEqual( result.Value.UserId.ToString(), userId);
-            
+            Assert.AreEqual(result.Value.Token, jwtToken);
+            Assert.AreEqual(result.Value.UserId.ToString(), userId);
+
 
         }
 
@@ -166,7 +166,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
         [Test]
         public async Task Login_ShouldReturnFailure_WhenInvalidCredentials()
         {
-           
+
             // Mock HttpMessageHandler
             var mockHandler = new Mock<HttpMessageHandler>();
             mockHandler
@@ -194,6 +194,45 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             // Assert
             Assert.IsTrue(result.IsFailure);
             Assert.AreEqual(AuthenticationErrors.InvalidUserNameOrPassword, result.Error);
+        }
+
+        [Test]
+        public async Task GetIdByUserName_ShouldReturnUserId_WhenUserExists()
+        {
+            // Arrange
+            var userName = "testuser";
+            var expectedUserId = "123456";
+            var token = "mocked_jwt_token";
+
+            // Mock GetAdminAccessToken to return a successful result with a token
+            _mockCachingService
+                .Setup(x => x.CacheItemExists(It.IsAny<string>()))
+                .Returns(false);
+
+            _mockCachingService
+                .Setup(x => x.GetCacheItem(It.IsAny<string>()))
+                .Returns(token);
+
+            // Create a mock HTTP client and set up response for GetAsync
+            var responseContent = $"[{{\"id\": \"{expectedUserId}\"}}]";
+            var _mockHandler = new Mock<HttpMessageHandler>();
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(responseContent, Encoding.UTF8, "application/json")
+                });
+
+            var mockHttpClient = new HttpClient(_mockHandler.Object) { BaseAddress = new Uri("https://example.com") };
+            _mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(mockHttpClient);
+
+            // Act
+            var result = await _authenticationProvider.GetIdByUserName(userName);
+
+            // Assert
+            Assert.IsTrue(result.IsSuccess);
+            Assert.AreEqual(expectedUserId, result.Value);
         }
     }
 
