@@ -2,6 +2,7 @@
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Contracts;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Events;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Caching;
+using Cdcn.Enterprise.Library.Domain.Errors;
 using Cdcn.Enterprise.Library.Domain.Primitives.Result;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication.Helper;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication.Setting;
@@ -33,30 +34,39 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
         private async Task<Result<string>> GetAdminAccessToken()
         {
             var key = Authencticate + _authenticationSetting.Admin;
-            if (!_cachingService.CacheItemExists(key))
+            try
             {
-                var data = await Login(_authenticationSetting.Admin, _authenticationSetting.Password);
-                _cachingService.SetCacheItem(key, JsonConvert.SerializeObject(data, Formatting.Indented));
-                return Result.Success<string>(data.Value.Token);
+                if (!_cachingService.CacheItemExists(key))
+                {
+                    var data = await Login(_authenticationSetting.Admin, _authenticationSetting.Password);
+                    _cachingService.SetCacheItem(key, JsonConvert.SerializeObject(data, Formatting.Indented));
+                    return Result.Success<string>(data.Value.Token);
+                }
+
+                var adminTokenJson = _cachingService.GetCacheItem(key);
+                var token = JsonConvert.DeserializeObject<TokenResponse>(adminTokenJson);
+
+                if (DateTime.UtcNow < token.ExpiredIn)
+                {
+
+                    return Result.Success<string>(token.Token);
+                }
+
+                var newToken = await Login(_authenticationSetting.Admin, _authenticationSetting.Password);
+
+                if (newToken.IsFailure)
+                {
+                    return Result.Failure<string>(AuthenticationErrors.InvalidAdminToken);
+                }
+
+                _cachingService.SetCacheItem(key, JsonConvert.SerializeObject(newToken, Formatting.Indented));
+
+                return Result.Success<string>(newToken.Value.Token);
             }
-
-            var adminTokenJson = _cachingService.GetCacheItem(key);
-            var token = JsonConvert.DeserializeObject<TokenResponse>(adminTokenJson);
-
-            if (DateTime.UtcNow < token.ExpiredIn)            {
-                
-                return Result.Success<string>(token.Token);
+            catch (Exception ex)
+            {
+                return Result.Failure<string>(GeneralErrors.ExceptionError(ex.Message));
             }
-
-            var newToken = await Login(_authenticationSetting.Admin, _authenticationSetting.Password);
-
-            if (newToken.IsFailure) {
-                return Result.Failure<string>(AuthenticationErrors.InvalidAdminToken);
-            }
-
-            _cachingService.SetCacheItem(key, JsonConvert.SerializeObject(newToken, Formatting.Indented));
-            
-            return Result.Success<string>(newToken.Value.Token);
         }
 
         private async Task<Result<string>> GetRoleIdByNameAsync(string roleName)
@@ -209,21 +219,29 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
                 return Result.Failure<string>(AuthenticationErrors.InvalidAdminToken);
             }
 
-            var admintoken = accesstoken.Value;
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", admintoken);
-
-            var response = await client.GetAsync(userEndpoint);
-            response.EnsureSuccessStatusCode();
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var users = JArray.Parse(responseContent);
-
-            if (users.Count == 1)
+            try
             {
-                return Result.Success<string>(users[0]["id"].ToString());
-            }
 
-            return Result.Failure<string>(AuthenticationErrors.InvalidUserNameOrPassword);
+                var admintoken = accesstoken.Value;
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", admintoken);
+
+                var response = await client.GetAsync(userEndpoint);
+                response.EnsureSuccessStatusCode();
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var users = JArray.Parse(responseContent);
+
+                if (users.Count == 1)
+                {
+                    return Result.Success<string>(users[0]["id"].ToString());
+                }
+
+                return Result.Failure<string>(AuthenticationErrors.InvalidUserNameOrPassword);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<string>(GeneralErrors.ExceptionError(ex.Message));
+            }
         }
 
         public async Task<Result<bool>> ResetPassword(string userName, string password)

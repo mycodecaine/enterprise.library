@@ -14,5 +14,10 @@ namespace Cdcn.Enterprise.Library.Domain.Errors
               "The server could not process the request.");
 
         public static Error ServerError => new Error("General.ServerError", "The server encountered an unrecoverable error.");
+
+        public static Error ExceptionError(string errorMessage)
+        {
+            return new Error("Exception", errorMessage);
+        }
     }
 }
