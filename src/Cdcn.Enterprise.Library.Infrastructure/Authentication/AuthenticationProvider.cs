@@ -3,6 +3,7 @@ using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Contra
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Events;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Caching;
 using Cdcn.Enterprise.Library.Domain.Errors;
+using Cdcn.Enterprise.Library.Domain.Exceptions;
 using Cdcn.Enterprise.Library.Domain.Primitives.Result;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication.Helper;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication.Setting;
@@ -65,7 +66,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             }
             catch (Exception ex)
             {
-                return Result.Failure<string>(GeneralErrors.ExceptionError(ex.Message));
+                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetAdminAccessToken", ex.Message));
             }
         }
 
@@ -240,7 +241,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             }
             catch (Exception ex)
             {
-                return Result.Failure<string>(GeneralErrors.ExceptionError(ex.Message));
+                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetIdByUserName", ex.Message));
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Cdcn.Enterprise.Library.Domain.Primitives
 {
-    public sealed class Error : ValueObject
+    public  class Error : ValueObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Error"/> class.
