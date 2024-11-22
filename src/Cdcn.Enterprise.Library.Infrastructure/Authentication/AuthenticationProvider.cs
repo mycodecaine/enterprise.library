@@ -12,6 +12,7 @@ using MediatR;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Polly.Timeout;
 using System.Net.Http.Json;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
@@ -64,9 +65,13 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
                 return Result.Success<string>(newToken.Value.Token);
             }
+            catch (TimeoutRejectedException ex)
+            {
+                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetAdminAccessToken.Polly.Timeout", ex.FormatExceptionMessage()));
+            }
             catch (Exception ex)
             {
-                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetAdminAccessToken", ex.Message));
+                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetAdminAccessToken", ex.FormatExceptionMessage()));
             }
         }
 
@@ -239,9 +244,14 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
                 return Result.Failure<string>(AuthenticationErrors.InvalidUserNameOrPassword);
             }
+            catch (TimeoutRejectedException ex)
+            {
+                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetIdByUserName.Polly.Timeout", ex.FormatExceptionMessage()));
+            }            
+        
             catch (Exception ex)
             {
-                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetIdByUserName", ex.Message));
+                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetIdByUserName", ex.FormatExceptionMessage()));
             }
         }
 

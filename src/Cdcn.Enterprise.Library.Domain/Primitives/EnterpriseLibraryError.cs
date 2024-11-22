@@ -8,7 +8,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
 {
     public class EnterpriseLibraryError : Error
     {
-        public EnterpriseLibraryError(string code, string message) : base($"EnterpriseLibrary-{code}", message)
+        public EnterpriseLibraryError(string code, string message) : base($"EnterpriseLibrary.{code}", message)
         {
         }
     }

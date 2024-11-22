@@ -123,8 +123,8 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Middleware
             {
                 ValidationException validationException => (HttpStatusCode.BadRequest, validationException.Errors),
                 DomainException domainException => (HttpStatusCode.BadRequest, new[] { domainException.Error }),
-                EnterpriseLibraryException enterpriseLibraryException => (HttpStatusCode.BadRequest, new[] { enterpriseLibraryException.Error }),
                 ArgumentException argumentException => (HttpStatusCode.BadRequest, new[] { new Error(GeneralErrors.UnProcessableRequest, argumentException.Message) }),
+                EnterpriseLibraryException enterpriseLibraryException => (HttpStatusCode.InternalServerError, new[] { enterpriseLibraryException.Error }),
                 _ => (HttpStatusCode.InternalServerError, new[] { GeneralErrors.ServerError })
             };
     }
