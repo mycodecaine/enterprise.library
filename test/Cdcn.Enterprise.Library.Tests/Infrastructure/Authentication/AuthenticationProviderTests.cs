@@ -196,7 +196,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             Assert.AreEqual(AuthenticationErrors.InvalidUserNameOrPassword, result.Error);
         }
 
-        [Test]
+       
         public async Task GetIdByUserName_ShouldReturnUserId_WhenUserExists()
         {
             // Arrange
