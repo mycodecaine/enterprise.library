@@ -67,11 +67,11 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             }
             catch (TimeoutRejectedException ex)
             {
-                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetAdminAccessToken.Polly.Timeout", ex.FormatExceptionMessage()));
+                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetAdminAccessToken.Polly.Timeout", ex));
             }
             catch (Exception ex)
             {
-                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetAdminAccessToken", ex.FormatExceptionMessage()));
+                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetAdminAccessToken", ex));
             }
         }
 
@@ -246,12 +246,12 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             }
             catch (TimeoutRejectedException ex)
             {
-                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetIdByUserName.Polly.Timeout", ex.FormatExceptionMessage()));
+                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetIdByUserName.Polly.Timeout", ex));
             }            
         
             catch (Exception ex)
             {
-                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetIdByUserName", ex.FormatExceptionMessage()));
+                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetIdByUserName", ex));
             }
         }
 

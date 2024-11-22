@@ -25,7 +25,7 @@ namespace Cdcn.Enterprise.Library.Logging
                 .WriteTo.Console().WriteTo.Debug();
             if (context.HostingEnvironment.IsDevelopment())
             {
-                loggerConfiguration.MinimumLevel.Override("Cdcn.UserProfile.Presentation", LogEventLevel.Information);
+                loggerConfiguration.MinimumLevel.Override(env.ApplicationName, LogEventLevel.Information);
 
             }
 

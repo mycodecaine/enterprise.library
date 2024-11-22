@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cdcn.Enterprise.Library.Domain.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
 {
     public class EnterpriseLibraryError : Error
     {
-        public EnterpriseLibraryError(string code, string message) : base($"EnterpriseLibrary.{code}", message)
+        public EnterpriseLibraryError(string code, Exception message) : base($"EnterpriseLibrary.{code}", message.FormatExceptionMessage())
         {
         }
     }
