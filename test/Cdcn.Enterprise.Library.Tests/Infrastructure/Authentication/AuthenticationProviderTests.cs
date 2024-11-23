@@ -2,6 +2,7 @@
 using Cdcn.Enterprise.Library.Infrastructure.Authentication;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication.Setting;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
@@ -21,6 +22,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
         private Mock<IMediator> _mockMediator;
         private Mock<IOptions<AuthenticationSetting>> _mockAuthenticationSetting;
         private AuthenticationProvider _authenticationProvider;
+        private Mock<ILogger<AuthenticationProvider>> _mockLogger;
 
         [SetUp]
         public void SetUp()
@@ -47,12 +49,16 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             // Mock IMediator
             _mockMediator = new Mock<IMediator>();
 
+            // MOck ILOgger
+            _mockLogger = new Mock<ILogger<AuthenticationProvider>>();
+
             // Create instance of AuthenticationProvider
             _authenticationProvider = new AuthenticationProvider(
                 _mockAuthenticationSetting.Object,
                 _mockHttpClientFactory.Object,
                 _mockCachingService.Object,
-                _mockMediator.Object
+                _mockMediator.Object,
+                _mockLogger.Object
             );
         }
 

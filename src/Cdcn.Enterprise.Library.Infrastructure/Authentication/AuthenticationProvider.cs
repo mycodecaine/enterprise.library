@@ -7,12 +7,16 @@ using Cdcn.Enterprise.Library.Domain.Exceptions;
 using Cdcn.Enterprise.Library.Domain.Primitives.Result;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication.Helper;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication.Setting;
+using Cdcn.Enterprise.Library.Infrastructure.Exceptions;
 using Cdcn.Enterprise.Library.Infrastructure.Extension;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Polly;
 using Polly.Timeout;
+using System;
 using System.Net.Http.Json;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
@@ -24,13 +28,15 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
         private readonly ICachingService _cachingService;
         private readonly IMediator _mediator;
         private const string Authencticate = "authenticate-";
+        private ILogger<AuthenticationProvider> _logger;
 
-        public AuthenticationProvider(IOptions<AuthenticationSetting> authenticationSetting, IHttpClientFactory httpClientFactory, ICachingService cachingService, IMediator mediator)
+        public AuthenticationProvider(IOptions<AuthenticationSetting> authenticationSetting, IHttpClientFactory httpClientFactory, ICachingService cachingService, IMediator mediator, ILogger<AuthenticationProvider> logger)
         {
             _authenticationSetting = authenticationSetting.Value;
             _httpClientFactory = httpClientFactory;
             _cachingService = cachingService;
             _mediator = mediator;
+            _logger = logger;
         }
 
         private async Task<Result<string>> GetAdminAccessToken()
@@ -67,11 +73,12 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             }
             catch (TimeoutRejectedException ex)
             {
-                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetAdminAccessToken.Polly.Timeout", ex));
+                throw ex.ThrowEnterpriseLibraryException(_logger, $"{typeof(AuthenticationProvider).FullName}.GetAdminAccessToken.TimeOut");
             }
             catch (Exception ex)
             {
-                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetAdminAccessToken", ex));
+                throw ex.ThrowEnterpriseLibraryException(_logger, $"{typeof(AuthenticationProvider).FullName}.GetAdminAccessToken");
+
             }
         }
 
@@ -246,12 +253,12 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             }
             catch (TimeoutRejectedException ex)
             {
-                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetIdByUserName.Polly.Timeout", ex));
-            }            
-        
+                throw ex.ThrowEnterpriseLibraryException(_logger, $"{typeof(AuthenticationProvider).FullName}.GetIdByUserName.TimeOut");
+            }
+
             catch (Exception ex)
             {
-                throw new EnterpriseLibraryException(GeneralErrors.EnterpriseLibraryError("AuthenticationProvider.GetIdByUserName", ex));
+                throw ex.ThrowEnterpriseLibraryException(_logger, $"{typeof(AuthenticationProvider).FullName}.GetIdByUserName");
             }
         }
 

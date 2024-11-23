@@ -17,6 +17,8 @@ namespace Cdcn.Enterprise.Library.Domain.Errors
         public static Error ServerError => new Error("General.ServerError", "The server encountered an unrecoverable error.");
 
         public static EnterpriseLibraryError EnterpriseLibraryError(string code, Exception exception) => new EnterpriseLibraryError(code, exception);
+        public static ServiceApplicationError ServiceApplicationError(string code, Exception exception) => new ServiceApplicationError(code, exception);
+        public static ServiceInfrastructureError ServiceInfrastructureError(string code, Exception exception) => new ServiceInfrastructureError(code, exception);
 
     }
 }

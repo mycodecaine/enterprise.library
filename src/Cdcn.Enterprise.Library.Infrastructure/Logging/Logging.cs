@@ -11,6 +11,7 @@ namespace Cdcn.Enterprise.Library.Logging
 {
     public class Logging
     {
+        public static ILogger Logger { get; private set; }
         public static Action<HostBuilderContext, LoggerConfiguration> ConfigureLogger =>
         (context, loggerConfiguration) =>
         {
@@ -41,6 +42,8 @@ namespace Cdcn.Enterprise.Library.Logging
                         MinimumLogEventLevel = LogEventLevel.Debug
                     });
             }
+
+            Logger = loggerConfiguration.CreateLogger(); // Set the static logger
         };
     }
 }
