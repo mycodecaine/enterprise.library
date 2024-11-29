@@ -41,9 +41,7 @@ namespace Cdcn.Enterprise.Library.Logging
                         IndexFormat = $"{env.ApplicationName}-Logs-{0:yyyy.MM.dd}",
                         MinimumLogEventLevel = LogEventLevel.Debug
                     });
-            }
-
-            Logger = loggerConfiguration.CreateLogger(); // Set the static logger
+            }           
         };
     }
 }
