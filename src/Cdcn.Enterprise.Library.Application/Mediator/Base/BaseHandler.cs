@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Cdcn.Enterprise.Library.Application.Mediator.Base
 {
-    public class BaseHandler<TRequest, TResult>
+    public class BaseHandler<TResult>
     {
         private readonly ILogger _logger;
 
@@ -33,7 +33,7 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "An unexpected error occurred.");
+                _logger?.LogError(ex, "An ServiceApplicationException occurred.");
                 throw HandleException.ThrowServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
             }
         }
