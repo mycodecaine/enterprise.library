@@ -19,14 +19,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Exceptions
             var error = GeneralErrors.EnterpriseLibraryError(context, exception);
             logger.LogCritical(error.Message);
             return new EnterpriseLibraryException(error);
-        }
-
-        public static ServiceApplicationException ThrowServiceApplicationException(this Exception exception, ILogger logger, string context)
-        {
-            var error = GeneralErrors.ServiceApplicationError(context, exception);
-            logger.LogCritical(error.Message);
-            return new ServiceApplicationException(error);
-        }
+        }       
 
         public static ServiceInfrastructureException ThrowServiceInfrastructureException(this Exception exception, ILogger logger, string context)
         {
