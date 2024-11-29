@@ -5,11 +5,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Cdcn.Enterprise.Library.Application.Mediator.Base
 {
-    public abstract class BaseHandler<TRequest, TResult>
+    public class BaseHandler<TRequest, TResult>
     {
+        private readonly ILogger _logger;
+
+        public BaseHandler(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         protected async Task<TResult> HandleSafelyAsync(
-            Func<Task<TResult>> handleCoreAsync,
-            ILogger logger,string context="")
+            Func<Task<TResult>> handleCoreAsync, string context = "")
         {
             try
             {
@@ -17,18 +23,18 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
             }
             catch (ServiceInfrastructureException ex)
             {
-                logger?.LogError(ex, "An ServiceInfrastructureException occurred.");
+                _logger?.LogError(ex, "An ServiceInfrastructureException occurred.");
                 throw; // Re throw the original exception.
             }
             catch (EnterpriseLibraryException ex)
             {
-                logger?.LogError(ex, "An EnterpriseLibraryException occurred.");
+                _logger?.LogError(ex, "An EnterpriseLibraryException occurred.");
                 throw; // Re throw the original exception.
             }
             catch (Exception ex)
-            {                
-                logger?.LogError(ex, "An unexpected error occurred.");
-                throw HandleException.ThrowServiceApplicationException(ex, logger, $"{context ?? this.GetType().FullName}");
+            {
+                _logger?.LogError(ex, "An unexpected error occurred.");
+                throw HandleException.ThrowServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
             }
         }
     }
