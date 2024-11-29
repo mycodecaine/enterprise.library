@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cdcn.Enterprise.Library.Application.Mediator.Base
 {
-    public abstract class CommandHandler<TCommand, TResponse>  : BaseHandler<TResponse>, IRequestHandler<TCommand, TResponse>
+    public abstract class CommandHandler<TCommand, TResponse>  : BaseHandler<TResponse>, ICommandHandler<TCommand, TResponse>
         where TCommand : ICommand<TResponse>
     {
         private readonly ILogger _logger;

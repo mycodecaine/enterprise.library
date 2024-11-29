@@ -127,6 +127,32 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
                 throw HandleException.ThrowServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
             }
         }
+
+
+        //TODO Refactor
+        protected async Task HandleSafelyAsync(
+            Func<Task> handleCoreAsync, CancellationToken? cancellationToken=null, Func<Task<TResult>>? rollBackAsync = null, string context = "")
+        {
+            try
+            {
+                 await handleCoreAsync();
+            }
+            catch (ServiceInfrastructureException ex)
+            {
+                _logger?.LogError(ex, "An ServiceInfrastructureException occurred.");
+                throw; // Re throw the original exception.
+            }
+            catch (EnterpriseLibraryException ex)
+            {
+                _logger?.LogError(ex, "An EnterpriseLibraryException occurred.");
+                throw; // Re throw the original exception.
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "An ServiceApplicationException occurred.");
+                throw HandleException.ThrowServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
+            }
+        }
     }
 
 }
