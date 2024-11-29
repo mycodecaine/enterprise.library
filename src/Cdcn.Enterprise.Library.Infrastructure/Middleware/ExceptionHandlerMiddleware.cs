@@ -118,12 +118,16 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Middleware
             return $"{response.StatusCode}: {body}";
         }
 
+
+        // TODO : in production environment ServiceApplicationException , ServiceInfrastructureException , EnterpriseLibraryException should be shown as GeneralErrors.ServerError
         private static (HttpStatusCode httpStatusCode, IReadOnlyCollection<Error>) GetHttpStatusCodeAndErrors(Exception exception) =>
             exception switch
             {
                 ValidationException validationException => (HttpStatusCode.BadRequest, validationException.Errors),
                 DomainException domainException => (HttpStatusCode.BadRequest, new[] { domainException.Error }),
                 ArgumentException argumentException => (HttpStatusCode.BadRequest, new[] { new Error(GeneralErrors.UnProcessableRequest, argumentException.Message) }),
+                ServiceApplicationException serviceApplicationException => (HttpStatusCode.InternalServerError, new[] { serviceApplicationException.Error }),
+                ServiceInfrastructureException serviceInfrastructureException => (HttpStatusCode.InternalServerError, new[] { serviceInfrastructureException.Error }),
                 EnterpriseLibraryException enterpriseLibraryException => (HttpStatusCode.InternalServerError, new[] { enterpriseLibraryException.Error }),
                 _ => (HttpStatusCode.InternalServerError, new[] { GeneralErrors.ServerError })
             };
