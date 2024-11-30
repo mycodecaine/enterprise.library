@@ -9,7 +9,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
 { 
     public class ServiceInfrastructureError : Error
     {
-        public ServiceInfrastructureError(string code, Exception message) : base($"Service.Infrastructure.{code}", message.FormatExceptionMessage())
+        public ServiceInfrastructureError(string code, Exception message) : base($"Service.Infrastructure.{code}", message.ToJsonString())
         {
         }
     }

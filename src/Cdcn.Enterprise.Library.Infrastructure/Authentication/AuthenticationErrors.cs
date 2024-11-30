@@ -41,8 +41,12 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             "Authentication.UserNameAlreadyExist",
             "The specified username already exist.");
 
-       
-        
+        public static Error UnauthorizedUser => new Error(
+            "Authentication.UnauthorizedUser",
+            "User is not Authenticate.");
+
+
+
 
     }
 

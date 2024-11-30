@@ -14,52 +14,7 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
             _logger = logger;
         }
 
-        /// <summary>
-        /// Handles an asynchronous operation safely by encapsulating the execution in a try-catch block 
-        /// and logging any exceptions that occur during the operation.
-        /// </summary>
-        /// <param name="handleCoreAsync">
-        /// A delegate representing the core asynchronous operation to execute.
-        /// </param>
-        /// <param name="context">
-        /// An optional context string to include in the log messages, providing additional information about the operation.
-        /// </param>
-        /// <returns>
-        /// A Task representing the asynchronous operation, which resolves to the result of type <typeparamref name="TResult"/>.
-        /// </returns>
-        /// <exception cref="ServiceInfrastructureException">
-        /// Thrown when a <see cref="ServiceInfrastructureException"/> occurs during the operation.
-        /// </exception>
-        /// <exception cref="EnterpriseLibraryException">
-        /// Thrown when an <see cref="EnterpriseLibraryException"/> occurs during the operation.
-        /// </exception>
-        /// <exception cref="ServiceApplicationException">
-        /// Thrown for any other exceptions that occur, after logging and transforming the exception.
-        /// </exception>
-        protected async Task<TResult> HandleSafelyAsync(
-            Func<Task<TResult>> handleCoreAsync, string context = "")
-        {
-            try
-            {
-                return await handleCoreAsync();
-            }
-            catch (ServiceInfrastructureException ex)
-            {
-                _logger?.LogError(ex, "An ServiceInfrastructureException occurred.");
-                throw; // Re throw the original exception.
-            }
-            catch (EnterpriseLibraryException ex)
-            {
-                _logger?.LogError(ex, "An EnterpriseLibraryException occurred.");
-                throw; // Re throw the original exception.
-            }
-            catch (Exception ex)
-            {
-                _logger?.LogError(ex, "An ServiceApplicationException occurred.");
-                throw HandleException.ThrowServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
-            }
-        }
-
+     
         /// <summary>
         /// Safely handles an asynchronous operation by executing the core logic and managing exceptions.
         /// This method ensures that if the operation is canceled, a rollback (if provided) is executed, and proper logging is performed.
@@ -92,13 +47,13 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
         /// Thrown when any other exceptions occur during the operation, after handling and logging them.
         /// </exception>
         protected async Task<TResult> HandleSafelyAsync(
-            Func<Task<TResult>> handleCoreAsync, CancellationToken cancellationToken, Func<Task<TResult>>? rollBackAsync = null , string context = "")
+            Func<Task<TResult>> handleCoreAsync, string context = "", CancellationToken? cancellationToken=null, Func<Task<TResult>>? rollBackAsync = null )
         {
             try
             {
                 return await handleCoreAsync();
             }
-            catch (OperationCanceledException ex) when (cancellationToken.IsCancellationRequested)
+            catch (OperationCanceledException ex) when (cancellationToken?.IsCancellationRequested == true)
             {
                 _logger?.LogWarning("Operation was canceled.");
 
@@ -109,7 +64,7 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
                     await rollBackAsync();
                 }
 
-                throw HandleException.ThrowServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
+                throw ExceptionHelper.ServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
             }
             catch (ServiceInfrastructureException ex)
             {
@@ -124,7 +79,7 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "An ServiceApplicationException occurred.");
-                throw HandleException.ThrowServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
+                throw ExceptionHelper.ServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
             }
         }
 
@@ -150,7 +105,7 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "An ServiceApplicationException occurred.");
-                throw HandleException.ThrowServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
+                throw ExceptionHelper.ServiceApplicationException(ex, _logger, $"{context ?? this.GetType().FullName}");
             }
         }
     }

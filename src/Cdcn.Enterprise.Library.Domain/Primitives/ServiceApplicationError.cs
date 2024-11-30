@@ -11,7 +11,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
 
     public class ServiceApplicationError : Error
     {
-        public ServiceApplicationError(string code, Exception message) : base($"Service.Application.{code}", message.FormatExceptionMessage())
+        public ServiceApplicationError(string code, Exception message) : base($"Service.Application.{code}", message.ToJsonString())
         {
         }
     }

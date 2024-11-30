@@ -14,11 +14,10 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
     public abstract class CommandHandler<TCommand, TResponse>  : BaseHandler<TResponse>, ICommandHandler<TCommand, TResponse>
         where TCommand : ICommand<TResponse>
     {
-        private readonly ILogger _logger;
-
+        
         protected CommandHandler(ILogger logger):base(logger) 
         {
-            _logger = logger;
+           
         }
 
         public abstract Task<TResponse> Handle(TCommand request, CancellationToken cancellationToken);        

@@ -1,5 +1,6 @@
 ﻿using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication;
 using Microsoft.AspNetCore.Http;
+using System.Security.Authentication;
 using System.Security.Claims;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
@@ -9,11 +10,11 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
         public UserIdentifierProvider(IHttpContextAccessor httpContextAccessor)
         {
             var claimPrincipal = httpContextAccessor.GetClaimPrincipal() ??
-                throw new ArgumentException("User is not Authenticate", nameof(httpContextAccessor));
+                throw new AuthenticationException("User is not Authenticate");
             var userIdClaim = claimPrincipal.FindFirstValue(ClaimTypes.NameIdentifier)
-                ?? throw new ArgumentException("User is not Authenticate", nameof(httpContextAccessor));
+                ?? throw new AuthenticationException("User is not Authenticate");
 
-           
+
 
             UserId = new Guid(userIdClaim);
             ClaimsPrincipal = claimPrincipal;

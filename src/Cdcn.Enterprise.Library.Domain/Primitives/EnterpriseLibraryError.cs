@@ -9,7 +9,7 @@ namespace Cdcn.Enterprise.Library.Domain.Primitives
 {
     public class EnterpriseLibraryError : Error
     {
-        public EnterpriseLibraryError(string code, Exception message) : base($"EnterpriseLibrary.{code}", message.FormatExceptionMessage())
+        public EnterpriseLibraryError(string code, Exception message) : base($"EnterpriseLibrary.{code}", message.ToJsonString())
         {
         }
     }

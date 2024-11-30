@@ -51,6 +51,7 @@
 	  <ProjectReference Include="..\Cdcn.Enterprise.Library.Application\Cdcn.Enterprise.Library.Application.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="Exceptions\" />
 	  <Folder Include="Logging\" />
 	</ItemGroup>
 </Project>

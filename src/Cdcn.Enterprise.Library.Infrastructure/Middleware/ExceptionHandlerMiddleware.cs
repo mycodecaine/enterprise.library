@@ -3,10 +3,12 @@ using Cdcn.Enterprise.Library.Application.Exceptions;
 using Cdcn.Enterprise.Library.Domain.Errors;
 using Cdcn.Enterprise.Library.Domain.Exceptions;
 using Cdcn.Enterprise.Library.Domain.Primitives;
+using Cdcn.Enterprise.Library.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
+using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
 
@@ -126,6 +128,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Middleware
                 ValidationException validationException => (HttpStatusCode.BadRequest, validationException.Errors),
                 DomainException domainException => (HttpStatusCode.BadRequest, new[] { domainException.Error }),
                 ArgumentException argumentException => (HttpStatusCode.BadRequest, new[] { new Error(GeneralErrors.UnProcessableRequest, argumentException.Message) }),
+                AuthenticationException authenticationException => (HttpStatusCode.Unauthorized, new[] { AuthenticationErrors.UnauthorizedUser }),
                 ServiceApplicationException serviceApplicationException => (HttpStatusCode.InternalServerError, new[] { serviceApplicationException.Error }),
                 ServiceInfrastructureException serviceInfrastructureException => (HttpStatusCode.InternalServerError, new[] { serviceInfrastructureException.Error }),
                 EnterpriseLibraryException enterpriseLibraryException => (HttpStatusCode.InternalServerError, new[] { enterpriseLibraryException.Error }),

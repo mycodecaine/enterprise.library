@@ -2,21 +2,17 @@
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Contracts;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Events;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Caching;
-using Cdcn.Enterprise.Library.Domain.Errors;
 using Cdcn.Enterprise.Library.Domain.Exceptions;
 using Cdcn.Enterprise.Library.Domain.Primitives.Result;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication.Helper;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication.Setting;
-using Cdcn.Enterprise.Library.Infrastructure.Exceptions;
 using Cdcn.Enterprise.Library.Infrastructure.Extension;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Polly;
 using Polly.Timeout;
-using System;
 using System.Net.Http.Json;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
@@ -73,11 +69,11 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             }
             catch (TimeoutRejectedException ex)
             {
-                throw ex.ThrowEnterpriseLibraryException(_logger, $"{typeof(AuthenticationProvider).FullName}.GetAdminAccessToken.TimeOut");
+                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationProvider).FullName}.GetAdminAccessToken.TimeOut");
             }
             catch (Exception ex)
             {
-                throw ex.ThrowEnterpriseLibraryException(_logger, $"{typeof(AuthenticationProvider).FullName}.GetAdminAccessToken");
+                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationProvider).FullName}.GetAdminAccessToken");
 
             }
         }
@@ -253,12 +249,12 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             }
             catch (TimeoutRejectedException ex)
             {
-                throw ex.ThrowEnterpriseLibraryException(_logger, $"{typeof(AuthenticationProvider).FullName}.GetIdByUserName.TimeOut");
+                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationProvider).FullName}.GetIdByUserName.TimeOut");
             }
 
             catch (Exception ex)
             {
-                throw ex.ThrowEnterpriseLibraryException(_logger, $"{typeof(AuthenticationProvider).FullName}.GetIdByUserName");
+                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationProvider).FullName}.GetIdByUserName");
             }
         }
 
