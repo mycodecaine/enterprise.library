@@ -23,7 +23,9 @@ namespace Cdcn.Enterprise.Library.Logging
                 .Enrich.WithExceptionDetails()
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-                .WriteTo.Console().WriteTo.Debug();
+                .WriteTo.Console().WriteTo.Debug()
+                .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day) // Optional: Log to file
+                .Enrich.FromLogContext(); ;
             if (context.HostingEnvironment.IsDevelopment())
             {
                 loggerConfiguration.MinimumLevel.Override(env.ApplicationName, LogEventLevel.Information);
@@ -41,7 +43,8 @@ namespace Cdcn.Enterprise.Library.Logging
                         IndexFormat = $"{env.ApplicationName}-Logs-{0:yyyy.MM.dd}",
                         MinimumLogEventLevel = LogEventLevel.Debug
                     });
-            }           
+            }        
+
         };
     }
 }
