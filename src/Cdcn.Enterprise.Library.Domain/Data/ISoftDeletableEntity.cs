@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cdcn.Enterprise.Library.Domain.Data
+﻿namespace Cdcn.Enterprise.Library.Domain.Data
 {
+    /// <summary>
+    /// Interface to enable entity to be soft deleting.
+    /// </summary>
     public interface ISoftDeletableEntity
     {
         /// <summary>
         /// Gets the date and time in UTC format the entity was deleted on.
+        /// Notes : https://chatgpt.com/share/6799694a-3bfc-8007-b1f0-dff7fa32aba4
         /// </summary>
         DateTime? DeletedOnUtc { get; }
 

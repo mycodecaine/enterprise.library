@@ -1,14 +1,8 @@
-﻿using Cdcn.Enterprise.Library.Domain.Errors;
-using Cdcn.Enterprise.Library.Domain.Primitives;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cdcn.Enterprise.Library.Domain.Primitives;
 
 namespace Cdcn.Enterprise.Library.Domain.Exceptions
 {
-   
+
     public class EnterpriseLibraryException : Exception
     {
         /// <summary>

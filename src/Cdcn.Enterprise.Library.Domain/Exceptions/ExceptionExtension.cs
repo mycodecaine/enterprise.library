@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Cdcn.Enterprise.Library.Domain.Exceptions
 {
@@ -25,7 +20,7 @@ namespace Cdcn.Enterprise.Library.Domain.Exceptions
             return JsonSerializer.Serialize(exceptionDetails, options);
         }
 
-        private static object GetExceptionDetails(Exception? ex)
+        private static object? GetExceptionDetails(Exception? ex)
         {
             if (ex == null) return null;
 
