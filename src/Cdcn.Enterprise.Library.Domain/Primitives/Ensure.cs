@@ -5,11 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Cdcn.Enterprise.Library.Domain.Primitives
-{ 
+{
+    /// <summary>
+    /// The Ensure Pattern is a design pattern used to validate that a certain condition holds true, and if it doesn't, 
+    /// it ensures that an exception is thrown or another action is taken to handle the violation of the condition. 
+    /// Notes : <a href="https://chatgpt.com/share/6799750c-f478-8007-9f45-b93ba7dcd6df"></a>
+    /// </summary>
     public static class Ensure
     {
         /// <summary>
-        /// Ensures that the specified <see cref="string"/> value is not empty.
+        /// Ensures that the specified <see cref="string"/> value is not empty.        
         /// </summary>
         /// <param name="value">The value to check.</param>
         /// <param name="message">The message to show if the check fails.</param>

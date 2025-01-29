@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cdcn.Enterprise.Library.Domain.Primitives.Result
+﻿namespace Cdcn.Enterprise.Library.Domain.Primitives.Result
 {
     public class Result
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Result"/> class with the specified parameters.
+        /// Notes : <a href="https://chatgpt.com/share/679973ac-853c-8007-bf67-11760c647b45"></a>
         /// </summary>
         /// <param name="isSuccess">The flag indicating if the result is successful.</param>
         /// <param name="error">The error.</param>

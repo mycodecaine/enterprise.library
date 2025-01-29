@@ -21,7 +21,6 @@
 
             return result.IsSuccess && predicate(result.Value) ? result : Result.Failure<T>(error);
         }
-
         /// <summary>
         /// Maps the result value to a new value based on the specified mapping function.
         /// </summary>
@@ -76,7 +75,6 @@
 
             return result.IsSuccess ? onSuccess() : onFailure(result.Error);
         }
-
         /// <summary>
         /// Matches the success status of the result to the corresponding functions.
         /// </summary>
@@ -97,7 +95,6 @@
 
             return result.IsSuccess ? onSuccess(result.Value) : onFailure(result.Error);
         }
-
         public static async Task<TIn> Match<TIn>(
             this Task<Result<TIn>> resultTask
             )
@@ -106,11 +103,5 @@
 
             return result.Value;
         }
-
-       
-
-
-
-
     }
 }

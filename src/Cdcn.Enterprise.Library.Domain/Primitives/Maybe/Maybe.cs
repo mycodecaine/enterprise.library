@@ -1,16 +1,9 @@
-﻿using Cdcn.Enterprise.Library.Domain.Primitives;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cdcn.Enterprise.Library.Domain.Primitives.Maybe
+﻿namespace Cdcn.Enterprise.Library.Domain.Primitives.Maybe
 {
     /// <summary>
     /// Represents an optional value that may or may not exist, 
     /// providing a functional approach to handle the presence or absence of a value.
-    /// Notes : https://chatgpt.com/share/67997334-0df0-8007-a768-123d7db54171
+    /// Notes : <a href="https://chatgpt.com/share/67997334-0df0-8007-a768-123d7db54171"></a>
     /// </summary>
     /// <typeparam name="T">The type of the value.</typeparam>
     public sealed class Maybe<T> : IEquatable<Maybe<T>>
