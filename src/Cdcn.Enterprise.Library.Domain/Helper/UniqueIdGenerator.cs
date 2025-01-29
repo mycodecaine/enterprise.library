@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Cdcn.Enterprise.Library.Domain.Helper
 {
+    /// <summary>
+    /// Provides functionality for generating unique identifiers.
+    /// This static class is thread-safe, ensuring unique IDs across multiple threads.
+    /// </summary>
     public static class UniqueIdGenerator
     {
         private static readonly object _lock = new object();
 
+        /// <summary>
+        /// Gets a unique identifier. The ID is generated using a combination of a 
+        /// high-resolution timestamp, a GUID, and an MD5 hash to ensure uniqueness.
+        /// This property is thread-safe.
+        /// </summary>
         public static string UniqueId
         {
             get
@@ -22,6 +27,14 @@ namespace Cdcn.Enterprise.Library.Domain.Helper
                 }
             }
         }
+
+        /// <summary>
+        /// Generates a unique identifier by combining:
+        /// - A high-resolution timestamp from <see cref="Stopwatch.GetTimestamp"/>.
+        /// - A portion of a GUID to add entropy.
+        /// - An MD5 hash of the combined string, formatted for compactness.
+        /// The resulting ID is an 8-character alphanumeric string.
+        /// </summary>
         public static string Generate()
         {
             long timestamp = Stopwatch.GetTimestamp(); // Provides a much finer-grained timestamp than DateTime.Now

@@ -2,8 +2,6 @@
 
 namespace Cdcn.Enterprise.Library.Domain.Exceptions
 {
-
-
     public class ServiceInfrastructureException : Exception
     {
         /// <summary>
