@@ -1,14 +1,18 @@
 ﻿using Cdcn.Enterprise.Library.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cdcn.Enterprise.Library.Domain.Primitives
-{ 
+{
+
+    /// <summary>
+    /// Represents an error that occurs in the service infrastructure.
+    /// </summary>
     public class ServiceInfrastructureError : Error
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceInfrastructureError"/> class.
+        /// </summary>
+        /// <param name="code">The error code.</param>
+        /// <param name="message">The exception message.</param>
         public ServiceInfrastructureError(string code, Exception message) : base($"Service.Infrastructure.{code}", message.ToJsonString())
         {
         }

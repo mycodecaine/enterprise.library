@@ -1,7 +1,16 @@
 ﻿namespace Cdcn.Enterprise.Library.Domain.Primitives
 {
+    /// <summary>
+    /// Represents a base class for value objects.
+    /// </summary>
     public abstract class ValueObject : IEquatable<ValueObject>
     {
+        /// <summary>
+        /// Determines whether two value object instances are equal.
+        /// </summary>
+        /// <param name="a">The first value object.</param>
+        /// <param name="b">The second value object.</param>
+        /// <returns>True if the value objects are equal; otherwise, false.</returns>
         public static bool operator ==(ValueObject a, ValueObject b)
         {
             if (a is null && b is null)
@@ -17,6 +26,12 @@
             return a.Equals(b);
         }
 
+        /// <summary>
+        /// Determines whether two value object instances are not equal.
+        /// </summary>
+        /// <param name="a">The first value object.</param>
+        /// <param name="b">The second value object.</param>
+        /// <returns>True if the value objects are not equal; otherwise, false.</returns>
         public static bool operator !=(ValueObject a, ValueObject b) => !(a == b);
 
         /// <inheritdoc />
