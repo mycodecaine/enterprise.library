@@ -1,4 +1,5 @@
 ﻿using Cdcn.Enterprise.Library.Domain.Data;
+using Cdcn.Enterprise.Library.Domain.Primitives;
 using Cdcn.Enterprise.Library.Domain.Primitives.Maybe;
 
 namespace Cdcn.Enterprise.Library.Domain.Relational.Repositories

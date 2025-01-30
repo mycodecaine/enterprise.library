@@ -1,6 +1,4 @@
-﻿using Cdcn.Enterprise.Library.Domain.Primitives;
-
-namespace Cdcn.Enterprise.Library.Domain.Relational
+﻿namespace Cdcn.Enterprise.Library.Domain.Primitives
 {
     public abstract class Entity : IEquatable<Entity>
     {

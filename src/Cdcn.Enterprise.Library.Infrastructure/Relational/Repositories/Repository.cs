@@ -1,6 +1,6 @@
 ﻿using Cdcn.Enterprise.Library.Domain.Data;
+using Cdcn.Enterprise.Library.Domain.Primitives;
 using Cdcn.Enterprise.Library.Domain.Primitives.Maybe;
-using Cdcn.Enterprise.Library.Domain.Relational;
 using Cdcn.Enterprise.Library.Domain.Relational.Repositories;
 using Cdcn.Enterprise.Library.Infrastructure.Relational.Abstractions;
 using Microsoft.EntityFrameworkCore;

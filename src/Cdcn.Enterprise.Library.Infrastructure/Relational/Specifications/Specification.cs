@@ -1,5 +1,5 @@
 ﻿
-using Cdcn.Enterprise.Library.Domain.Relational;
+using Cdcn.Enterprise.Library.Domain.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;

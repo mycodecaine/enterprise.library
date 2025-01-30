@@ -1,5 +1,5 @@
-﻿using Cdcn.Enterprise.Library.Domain.Primitives.Maybe;
-using Cdcn.Enterprise.Library.Domain.Relational;
+﻿using Cdcn.Enterprise.Library.Domain.Primitives;
+using Cdcn.Enterprise.Library.Domain.Primitives.Maybe;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;

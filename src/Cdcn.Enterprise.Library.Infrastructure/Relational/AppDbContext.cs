@@ -2,7 +2,6 @@
 using Cdcn.Enterprise.Library.Domain.Data;
 using Cdcn.Enterprise.Library.Domain.Events;
 using Cdcn.Enterprise.Library.Domain.Primitives.Maybe;
-using Cdcn.Enterprise.Library.Domain.Relational;
 using Cdcn.Enterprise.Library.Domain.Relational.UnitOfWorks;
 using Cdcn.Enterprise.Library.Infrastructure.Relational.Abstractions;
 using MediatR;
@@ -12,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Reflection;
 using Cdcn.Enterprise.Library.Infrastructure.Relational.Extensions;
+using Cdcn.Enterprise.Library.Domain.Primitives;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Relational
 {

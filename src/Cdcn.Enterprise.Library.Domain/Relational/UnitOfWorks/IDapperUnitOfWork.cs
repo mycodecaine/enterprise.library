@@ -1,4 +1,5 @@
-﻿using Cdcn.Enterprise.Library.Domain.Relational.Repositories;
+﻿using Cdcn.Enterprise.Library.Domain.Primitives;
+using Cdcn.Enterprise.Library.Domain.Relational.Repositories;
 
 namespace Cdcn.Enterprise.Library.Domain.Relational.UnitOfWorks
 {

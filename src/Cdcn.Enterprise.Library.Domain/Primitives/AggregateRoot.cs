@@ -1,6 +1,6 @@
 ﻿using Cdcn.Enterprise.Library.Domain.Events;
 
-namespace Cdcn.Enterprise.Library.Domain.Relational
+namespace Cdcn.Enterprise.Library.Domain.Primitives
 {
     public abstract class AggregateRoot : Entity
     {
