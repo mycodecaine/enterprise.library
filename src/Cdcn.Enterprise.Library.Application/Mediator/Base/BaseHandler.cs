@@ -5,6 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Cdcn.Enterprise.Library.Application.Mediator.Base
 {
+    /// <summary>
+    /// BaseHandler is an abstract class that provides a template for handling asynchronous operations safely.
+    /// It includes methods to handle core logic and manage exceptions, ensuring proper logging and rollback mechanisms.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result returned by the asynchronous operations.</typeparam>
     public abstract class BaseHandler<TResult>
     {
         private readonly ILogger _logger;
@@ -14,7 +19,6 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
             _logger = logger;
         }
 
-     
         /// <summary>
         /// Safely handles an asynchronous operation by executing the core logic and managing exceptions.
         /// This method ensures that if the operation is canceled, a rollback (if provided) is executed, and proper logging is performed.
@@ -47,7 +51,7 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
         /// Thrown when any other exceptions occur during the operation, after handling and logging them.
         /// </exception>
         protected async Task<TResult> HandleSafelyAsync(
-            Func<Task<TResult>> handleCoreAsync, string context = "", CancellationToken? cancellationToken=null, Func<Task<TResult>>? rollBackAsync = null )
+            Func<Task<TResult>> handleCoreAsync, string context = "", CancellationToken? cancellationToken = null, Func<Task<TResult>>? rollBackAsync = null)
         {
             try
             {
@@ -83,7 +87,6 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
             }
         }
 
-
         /// <summary>
         /// Safely handles an asynchronous operation by executing the core logic and managing exceptions.
         /// This method ensures that if the operation is canceled, a rollback (if provided) is executed, and proper logging is performed.
@@ -101,7 +104,7 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
         /// An optional context string for logging purposes to identify the operation's source or purpose.
         /// </param>
         /// <returns>
-        /// A Task representing the asynchronous operation that resolves to the result of type <typeparamref name="TResult"/>.
+        /// A Task representing the asynchronous operation.
         /// </returns>
         /// <exception cref="OperationCanceledException">
         /// Thrown when the operation is canceled (either by the client or due to a timeout).
@@ -116,11 +119,11 @@ namespace Cdcn.Enterprise.Library.Application.Mediator.Base
         /// Thrown when any other exceptions occur during the operation, after handling and logging them.
         /// </exception>
         protected async Task HandleSafelyAsync(
-            Func<Task> handleCoreAsync, CancellationToken? cancellationToken=null, Func<Task<TResult>>? rollBackAsync = null, string context = "")
+            Func<Task> handleCoreAsync, CancellationToken? cancellationToken = null, Func<Task<TResult>>? rollBackAsync = null, string context = "")
         {
             try
             {
-                 await handleCoreAsync();
+                await handleCoreAsync();
             }
             catch (OperationCanceledException ex) when (cancellationToken?.IsCancellationRequested == true)
             {

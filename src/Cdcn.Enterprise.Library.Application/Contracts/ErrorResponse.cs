@@ -7,8 +7,15 @@ using System.Threading.Tasks;
 
 namespace Cdcn.Enterprise.Library.Application.Contracts
 {
+    /// <summary>
+    /// Represents a response containing a collection of errors.
+    /// </summary>
     public class ErrorResponse
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ErrorResponse"/> class.
+        /// </summary>
+        /// <param name="errors">The collection of errors.</param>
         public ErrorResponse(IReadOnlyCollection<Error> errors) => Errors = errors;
 
         /// <summary>
