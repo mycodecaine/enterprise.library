@@ -1,7 +1,7 @@
-﻿using Cdcn.Enterprise.Library.Domain.Primitives;
-using Cdcn.Enterprise.Library.Domain.Relational.Repositories;
+﻿using Cdcn.Enterprise.Library.Application.Core.Abstraction.Relational.Repositories;
+using Cdcn.Enterprise.Library.Domain.Primitives;
 
-namespace Cdcn.Enterprise.Library.Domain.Relational.UnitOfWorks
+namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.Relational.UnitOfWorks
 {
     /// <summary>
     /// Interface for a unit of work that manages Dapper repositories and transactions.

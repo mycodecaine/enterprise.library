@@ -25,4 +25,8 @@
 	  <ProjectReference Include="..\Cdcn.Enterprise.Library.Domain\Cdcn.Enterprise.Library.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Core\Abstraction\Table\Repositories\" />
+	</ItemGroup>
+
 </Project>

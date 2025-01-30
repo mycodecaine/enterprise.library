@@ -3,7 +3,7 @@ using Cdcn.Enterprise.Library.Domain.Primitives;
 using Cdcn.Enterprise.Library.Domain.Primitives.Maybe;
 using System.Data;
 
-namespace Cdcn.Enterprise.Library.Domain.Relational.Repositories
+namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.Relational.Repositories
 {
     /// <summary>
     /// Interface for a Dapper repository that provides basic CRUD operations and query capabilities for entities.

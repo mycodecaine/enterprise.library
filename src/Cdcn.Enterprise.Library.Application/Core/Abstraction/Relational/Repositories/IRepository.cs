@@ -2,7 +2,7 @@
 using Cdcn.Enterprise.Library.Domain.Primitives;
 using Cdcn.Enterprise.Library.Domain.Primitives.Maybe;
 
-namespace Cdcn.Enterprise.Library.Domain.Relational.Repositories
+namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.Relational.Repositories
 {
     /// <summary>
     /// Defines a repository interface for managing entities of type <typeparamref name="TEntity"/>.

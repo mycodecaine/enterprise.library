@@ -1,4 +1,4 @@
-﻿namespace Cdcn.Enterprise.Library.Domain.Relational.UnitOfWorks
+﻿namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.Relational.UnitOfWorks
 {
     /// <summary>
     /// Represents a unit of work that encapsulates a set of operations to be committed as a single transaction.

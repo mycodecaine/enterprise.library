@@ -1,4 +1,4 @@
-﻿using Cdcn.Enterprise.Library.Domain.Data;
+using Cdcn.Enterprise.Library.Domain.Data;
 using Cdcn.Enterprise.Library.Domain.Primitives;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cdcn.Enterprise.Library.Domain.Table.Repositories
+namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.Table.Repositories
 {
     /// <summary>
     /// Defines a repository interface for managing entities of type <typeparamref name="TEntity"/>.
