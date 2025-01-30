@@ -24,7 +24,7 @@ namespace Cdcn.Enterprise.Library.Domain.Tests.Primitives.Maybe
         }
 
         [Test]
-        public async Task Bind_WithoutValue_ReturnsNone()
+        public void Bind_WithoutValue_ReturnsNone()
         {
             // Arrange
             var maybe = Maybe<int>.None;
