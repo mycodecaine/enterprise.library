@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 
 namespace Cdcn.Enterprise.Library.Domain.Data
 {
-    [ExcludeFromCodeCoverage]
+    /// <summary>
+    /// Represents the base class for paginated results, providing common pagination properties.
+    /// </summary>
+   
     public abstract class PagedResultBase
     {
         /// <summary>
@@ -68,7 +71,10 @@ namespace Cdcn.Enterprise.Library.Domain.Data
         }
     }
 
-    [ExcludeFromCodeCoverage]
+   
+    /// <summary>
+    /// Provides extension methods for paginating and ordering collections.
+    /// </summary>
     public static class PagedResultExtension
     {
         /// <summary>

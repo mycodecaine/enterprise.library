@@ -1,6 +1,9 @@
-﻿namespace Cdcn.Enterprise.Library.Domain.Primitives
+﻿namespace Cdcn.Enterprise.Library.Domain.Primitives.Errors
 {
-    public  class Error : ValueObject
+    /// <summary>
+    /// Represents an error with a code and a message.
+    /// </summary>
+    public class Error : ValueObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Error"/> class.

@@ -1,5 +1,5 @@
 ﻿using Cdcn.Enterprise.Library.Application.Contracts;
-using Cdcn.Enterprise.Library.Domain.Primitives;
+using Cdcn.Enterprise.Library.Domain.Primitives.Errors;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;

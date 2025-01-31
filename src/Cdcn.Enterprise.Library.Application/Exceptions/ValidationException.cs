@@ -1,4 +1,4 @@
-﻿using Cdcn.Enterprise.Library.Domain.Primitives;
+﻿using Cdcn.Enterprise.Library.Domain.Primitives.Errors;
 using FluentValidation.Results;
 
 namespace Cdcn.Enterprise.Library.Application.Exceptions

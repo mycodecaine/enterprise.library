@@ -2,6 +2,12 @@
 using System.Reflection;
 namespace Cdcn.Enterprise.Library.Domain.Primitives
 {
+    /// <summary>
+    /// Represents a base class for creating type-safe enumerations.
+    /// This class provides functionality to define enumerations with values and names,
+    /// and supports equality comparison, sorting, and retrieval of enumeration instances.
+    /// </summary>
+    /// <typeparam name="TEnum">The type of the enumeration. This should be the derived class itself.</typeparam>
     public abstract class Enumeration<TEnum> : IEquatable<Enumeration<TEnum>>, IComparable<Enumeration<TEnum>>
        where TEnum : Enumeration<TEnum>
     {

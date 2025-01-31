@@ -2,7 +2,7 @@
 using Cdcn.Enterprise.Library.Application.Exceptions;
 using Cdcn.Enterprise.Library.Domain.Errors;
 using Cdcn.Enterprise.Library.Domain.Exceptions;
-using Cdcn.Enterprise.Library.Domain.Primitives;
+using Cdcn.Enterprise.Library.Domain.Primitives.Errors;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

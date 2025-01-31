@@ -1,4 +1,4 @@
-﻿using Cdcn.Enterprise.Library.Domain.Primitives;
+﻿using Cdcn.Enterprise.Library.Domain.Primitives.Errors;
 
 namespace Cdcn.Enterprise.Library.Domain.Errors
 {

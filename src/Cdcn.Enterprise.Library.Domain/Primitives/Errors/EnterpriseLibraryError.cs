@@ -1,6 +1,6 @@
 ﻿using Cdcn.Enterprise.Library.Domain.Exceptions;
 
-namespace Cdcn.Enterprise.Library.Domain.Primitives
+namespace Cdcn.Enterprise.Library.Domain.Primitives.Errors
 {
     /// <summary>
     /// Represents an error specific to the Enterprise Library.

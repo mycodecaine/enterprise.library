@@ -1,4 +1,6 @@
-﻿namespace Cdcn.Enterprise.Library.Domain.Primitives.Maybe
+﻿using Cdcn.Enterprise.Library.Domain.Primitives.Errors;
+
+namespace Cdcn.Enterprise.Library.Domain.Primitives.Maybe
 {
     /// <summary>
     /// Represents an optional value that may or may not exist, 

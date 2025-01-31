@@ -1,4 +1,5 @@
 ﻿using Cdcn.Enterprise.Library.Domain.Primitives;
+using Cdcn.Enterprise.Library.Domain.Primitives.Errors;
 using Cdcn.Enterprise.Library.Domain.Primitives.Maybe;
 
 namespace Cdcn.Enterprise.Library.Domain.Tests.Primitives.Maybe

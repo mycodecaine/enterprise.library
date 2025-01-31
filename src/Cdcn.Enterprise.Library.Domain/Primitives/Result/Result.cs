@@ -1,4 +1,6 @@
-﻿namespace Cdcn.Enterprise.Library.Domain.Primitives.Result
+﻿using Cdcn.Enterprise.Library.Domain.Primitives.Errors;
+
+namespace Cdcn.Enterprise.Library.Domain.Primitives.Result
 {
     public class Result
     {

@@ -2,6 +2,7 @@
 {
     /// <summary>
     /// Represents a base class for value objects.
+    /// Notes : <a href="https://chatgpt.com/share/679c2f3f-9f1c-8007-9dc7-8f16bd8f079a" />
     /// </summary>
     public abstract class ValueObject : IEquatable<ValueObject>
     {

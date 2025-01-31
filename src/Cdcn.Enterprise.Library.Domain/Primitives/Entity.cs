@@ -1,5 +1,9 @@
 ﻿namespace Cdcn.Enterprise.Library.Domain.Primitives
 {
+    /// <summary>
+    /// Represents a base class for all entities in the domain.
+    /// Provides equality comparison based on the entity identifier.
+    /// </summary>
     public abstract class Entity : IEquatable<Entity>
     {
         /// <summary>

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cdcn.Enterprise.Library.Domain.Data
+﻿namespace Cdcn.Enterprise.Library.Domain.Data
 {
     /// <summary>
     /// Represents a collection of SQL filter conditions for querying data of type <typeparamref name="TEntity"/>.
