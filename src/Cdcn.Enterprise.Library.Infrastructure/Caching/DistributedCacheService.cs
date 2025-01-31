@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Caching
 {
-    public class DistributedCachingService : ICachingService
+    public class DistributedCacheService : ICacheService
     {
         private readonly IDistributedCache _cache;
 
-        public DistributedCachingService(IDistributedCache cache)
+        public DistributedCacheService(IDistributedCache cache)
         {
             _cache = cache;
         }

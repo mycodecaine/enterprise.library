@@ -21,12 +21,12 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
     {
         private readonly AuthenticationSetting _authenticationSetting;
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ICachingService _cachingService;
+        private readonly ICacheService _cachingService;
         private readonly IMediator _mediator;
         private const string Authencticate = "authenticate-";
         private ILogger<AuthenticationProvider> _logger;
 
-        public AuthenticationProvider(IOptions<AuthenticationSetting> authenticationSetting, IHttpClientFactory httpClientFactory, ICachingService cachingService, IMediator mediator, ILogger<AuthenticationProvider> logger)
+        public AuthenticationProvider(IOptions<AuthenticationSetting> authenticationSetting, IHttpClientFactory httpClientFactory, ICacheService cachingService, IMediator mediator, ILogger<AuthenticationProvider> logger)
         {
             _authenticationSetting = authenticationSetting.Value;
             _httpClientFactory = httpClientFactory;

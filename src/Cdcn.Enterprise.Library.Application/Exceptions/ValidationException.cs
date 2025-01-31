@@ -3,6 +3,9 @@ using FluentValidation.Results;
 
 namespace Cdcn.Enterprise.Library.Application.Exceptions
 {
+    /// <summary>
+    /// Represents an exception that occurs during validation.
+    /// </summary>
     public sealed class ValidationException : Exception
     {
         /// <summary>

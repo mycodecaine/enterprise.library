@@ -5,12 +5,12 @@ using StackExchange.Redis;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Caching
 {
-    public class CachingService : ICachingService
+    public class CacheService : ICacheService
     {
         private readonly ConnectionMultiplexer _redis;
         private readonly IDatabase _db;
 
-        public CachingService(IOptions<CachingSetting> cacheSetting)
+        public CacheService(IOptions<CachingSetting> cacheSetting)
         {
             _redis = ConnectionMultiplexer.Connect(cacheSetting.Value.ConnectionString);
             _db = _redis.GetDatabase();

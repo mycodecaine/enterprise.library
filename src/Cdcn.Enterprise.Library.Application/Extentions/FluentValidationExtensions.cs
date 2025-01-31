@@ -3,6 +3,9 @@ using FluentValidation;
 
 namespace Cdcn.Enterprise.Library.Application.Extentions
 {
+    /// <summary>
+    /// Provides extension methods for FluentValidation to support custom error handling.
+    /// </summary>
     public static class FluentValidationExtensions
     {
         /// <summary>

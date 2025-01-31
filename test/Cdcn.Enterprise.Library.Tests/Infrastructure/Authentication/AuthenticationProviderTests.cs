@@ -18,7 +18,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
     public class AuthenticationProviderTests
     {
         private Mock<IHttpClientFactory> _mockHttpClientFactory;
-        private Mock<ICachingService> _mockCachingService;
+        private Mock<ICacheService> _mockCachingService;
         private Mock<IMediator> _mockMediator;
         private Mock<IOptions<AuthenticationSetting>> _mockAuthenticationSetting;
         private AuthenticationProvider _authenticationProvider;
@@ -44,7 +44,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             _mockHttpClientFactory = new Mock<IHttpClientFactory>();
 
             // Mock ICachingService
-            _mockCachingService = new Mock<ICachingService>();
+            _mockCachingService = new Mock<ICacheService>();
 
             // Mock IMediator
             _mockMediator = new Mock<IMediator>();
