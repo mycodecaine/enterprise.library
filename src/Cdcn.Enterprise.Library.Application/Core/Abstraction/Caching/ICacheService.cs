@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.Caching
+﻿namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.Caching
 {
     /// <summary>
     /// Interface for cache service to handle caching operations.
