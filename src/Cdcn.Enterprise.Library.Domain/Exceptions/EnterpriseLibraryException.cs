@@ -3,6 +3,9 @@
 namespace Cdcn.Enterprise.Library.Domain.Exceptions
 {
 
+    /// <summary>
+    /// Represents an exception specific to the Enterprise Library.
+    /// </summary>
     public class EnterpriseLibraryException : Exception
     {
         /// <summary>

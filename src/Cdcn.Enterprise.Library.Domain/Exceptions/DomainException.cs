@@ -1,6 +1,9 @@
 ﻿using Cdcn.Enterprise.Library.Domain.Primitives.Errors;
 namespace Cdcn.Enterprise.Library.Domain.Exceptions
 {
+    /// <summary>
+    /// Represents an exception that occurs within the domain layer.
+    /// </summary>
     public class DomainException : Exception
     {
         /// <summary>

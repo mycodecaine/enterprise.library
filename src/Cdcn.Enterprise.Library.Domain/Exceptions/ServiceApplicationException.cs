@@ -2,6 +2,9 @@
 
 namespace Cdcn.Enterprise.Library.Domain.Exceptions
 {
+    /// <summary>
+    /// Represents an exception that occurs in the service application.
+    /// </summary>
     public class ServiceApplicationException : Exception
     {
         /// <summary>
