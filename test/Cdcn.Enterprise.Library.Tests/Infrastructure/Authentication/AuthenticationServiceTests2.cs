@@ -15,7 +15,7 @@ using System.Text;
 namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
 {
     [TestFixture]
-    public class AuthenticationServiceTests
+    public class AuthenticationServiceTests2
     {
         private Mock<IHttpClientFactory> _mockHttpClientFactory;
         private Mock<ICacheService> _mockCachingService;

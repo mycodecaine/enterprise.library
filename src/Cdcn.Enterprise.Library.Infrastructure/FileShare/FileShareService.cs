@@ -24,12 +24,12 @@ namespace Cdcn.Enterprise.Library.Infrastructure.FileShare
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<Result<bool>> DeleteFileAsync(string fileName, string directoryName = "", string shareName = "swq")
+        public Task<Result<bool>> DeleteFileAsync(string fileName, string directoryName = "", string shareName = IFileShareService.DefaultFileShareName)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Result< Stream>> DownloadFileAsync(string fileName, string directoryName = "", string shareName = "swq")
+        public async Task<Result< Stream>> DownloadFileAsync(string fileName, string directoryName = "", string shareName = IFileShareService.DefaultFileShareName)
         {
             var file = await GetFileUrlAsync(fileName, directoryName, shareName);
             if (string.IsNullOrEmpty(file.Value))
@@ -45,7 +45,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.FileShare
             return Result.Success(data);
         }
 
-        public Task<Result<HttpResponseMessage>> GetBlobAsync(string fileName, string folder = "", string shareName = "swq")
+        public Task<Result<HttpResponseMessage>> GetBlobAsync(string fileName, string folder = "", string shareName = IFileShareService.DefaultFileShareName)
         {
             throw new NotImplementedException();
         }
@@ -70,7 +70,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.FileShare
             return sasBuilder.ToSasQueryParameters(storageSharedKeyCredential).ToString();
         }
 
-        public async Task<Result<string>> GetFileUrlAsync(string fileName, string directoryName = "", string shareName = "swq")
+        public async Task<Result<string>> GetFileUrlAsync(string fileName, string directoryName = "", string shareName = IFileShareService.DefaultFileShareName)
         {
             ShareClient share = new ShareClient(_fileShareSetting.ConnectionString, shareName);
             await share.CreateIfNotExistsAsync();
@@ -100,7 +100,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.FileShare
             }
         }
 
-        public async Task<Result<string>> UploadFileAsync(string fileName, byte[] content, string directoryName = "", string shareName = "swq")
+        public async Task<Result<string>> UploadFileAsync(string fileName, byte[] content, string directoryName = "", string shareName = IFileShareService.DefaultFileShareName)
         {
             ShareClient share = new ShareClient(_fileShareSetting.ConnectionString, shareName);
             await share.CreateIfNotExistsAsync();

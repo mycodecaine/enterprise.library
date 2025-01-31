@@ -34,8 +34,11 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             _mediator = mediator;
             _logger = logger;
         }
-
-        private async Task<Result<string>> GetAdminAccessToken()
+        /// <summary>
+        /// Get the admin access token
+        /// </summary>
+        /// <returns>Token</returns>
+        protected async Task<Result<string>> GetAdminAccessToken()
         {
             var key = Authencticate + _authenticationSetting.Admin;
             try
@@ -77,8 +80,12 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
             }
         }
-
-        private async Task<Result<string>> GetRoleIdByNameAsync(string roleName)
+        /// <summary>
+        /// Get the role id by role name
+        /// </summary>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        protected async Task<Result<string>> GetRoleIdByNameAsync(string roleName)
         {
             var client = _httpClientFactory.CreateClientWithPolicy();
             var userEndpoint = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/roles/{roleName}";
@@ -104,8 +111,14 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
             return Result.Success<string>(role["id"].ToString());
         }
-
-        private async Task<Result<TokenResponse>> BaseLogin(string username, string password, string refreshtoken = "")
+        /// <summary>
+        /// Base login method
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="refreshtoken"></param>
+        /// <returns></returns>
+       virtual protected async Task<Result<TokenResponse>> BaseLogin(string username, string password, string refreshtoken = "")
         {
             var client = _httpClientFactory.CreateClientWithPolicy();
 
@@ -214,9 +227,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
             return Result.Failure<TokenResponse>(AuthenticationErrors.InvalidUserNameOrPassword);
         }
-
-
-
         public async Task<Result<string>> GetIdByUserName(string userName)
         {
             var client = _httpClientFactory.CreateClientWithPolicy();
@@ -257,7 +267,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
                 throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationService).FullName}.GetIdByUserName");
             }
         }
-
         public async Task<Result<bool>> ResetPassword(string userName, string password)
         {
             var client = _httpClientFactory.CreateClientWithPolicy();
@@ -294,7 +303,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
             return Result.Failure<bool>(AuthenticationErrors.ResetPasswordError);
         }
-
         public async Task<Result<bool>> AssignRole(string userName, string roleName)
         {
             var client = _httpClientFactory.CreateClientWithPolicy();
