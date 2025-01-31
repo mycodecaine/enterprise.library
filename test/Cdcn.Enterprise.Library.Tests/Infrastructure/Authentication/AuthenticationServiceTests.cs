@@ -15,14 +15,14 @@ using System.Text;
 namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
 {
     [TestFixture]
-    public class AuthenticationProviderTests
+    public class AuthenticationServiceTests
     {
         private Mock<IHttpClientFactory> _mockHttpClientFactory;
         private Mock<ICacheService> _mockCachingService;
         private Mock<IMediator> _mockMediator;
         private Mock<IOptions<AuthenticationSetting>> _mockAuthenticationSetting;
-        private AuthenticationProvider _authenticationProvider;
-        private Mock<ILogger<AuthenticationProvider>> _mockLogger;
+        private AuthenticationService _authenticationProvider;
+        private Mock<ILogger<AuthenticationService>> _mockLogger;
 
         [SetUp]
         public void SetUp()
@@ -50,10 +50,10 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             _mockMediator = new Mock<IMediator>();
 
             // MOck ILOgger
-            _mockLogger = new Mock<ILogger<AuthenticationProvider>>();
+            _mockLogger = new Mock<ILogger<AuthenticationService>>();
 
             // Create instance of AuthenticationProvider
-            _authenticationProvider = new AuthenticationProvider(
+            _authenticationProvider = new AuthenticationService(
                 _mockAuthenticationSetting.Object,
                 _mockHttpClientFactory.Object,
                 _mockCachingService.Object,

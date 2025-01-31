@@ -6,7 +6,7 @@ namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication
     /// <summary>
     /// Provides methods for user authentication and management.
     /// </summary>
-    public interface IAuthenticationProvider
+    public interface IAuthenticationService
     {
         /// <summary>
         /// Authenticates a user with the specified username and password.

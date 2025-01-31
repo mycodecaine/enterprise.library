@@ -17,16 +17,16 @@ using System.Net.Http.Json;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 {
-    public class AuthenticationProvider : IAuthenticationProvider
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly AuthenticationSetting _authenticationSetting;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ICacheService _cachingService;
         private readonly IMediator _mediator;
         private const string Authencticate = "authenticate-";
-        private ILogger<AuthenticationProvider> _logger;
+        private ILogger<AuthenticationService> _logger;
 
-        public AuthenticationProvider(IOptions<AuthenticationSetting> authenticationSetting, IHttpClientFactory httpClientFactory, ICacheService cachingService, IMediator mediator, ILogger<AuthenticationProvider> logger)
+        public AuthenticationService(IOptions<AuthenticationSetting> authenticationSetting, IHttpClientFactory httpClientFactory, ICacheService cachingService, IMediator mediator, ILogger<AuthenticationService> logger)
         {
             _authenticationSetting = authenticationSetting.Value;
             _httpClientFactory = httpClientFactory;
@@ -69,11 +69,11 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             }
             catch (TimeoutRejectedException ex)
             {
-                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationProvider).FullName}.GetAdminAccessToken.TimeOut");
+                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationService).FullName}.GetAdminAccessToken.TimeOut");
             }
             catch (Exception ex)
             {
-                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationProvider).FullName}.GetAdminAccessToken");
+                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationService).FullName}.GetAdminAccessToken");
 
             }
         }
@@ -249,12 +249,12 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             }
             catch (TimeoutRejectedException ex)
             {
-                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationProvider).FullName}.GetIdByUserName.TimeOut");
+                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationService).FullName}.GetIdByUserName.TimeOut");
             }
 
             catch (Exception ex)
             {
-                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationProvider).FullName}.GetIdByUserName");
+                throw ExceptionHelper.EnterpriseLibraryException(ex, _logger, $"{typeof(AuthenticationService).FullName}.GetIdByUserName");
             }
         }
 
