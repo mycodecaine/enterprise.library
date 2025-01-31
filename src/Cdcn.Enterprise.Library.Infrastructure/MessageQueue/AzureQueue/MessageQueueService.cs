@@ -1,6 +1,6 @@
 ﻿using Azure.Storage.Queues;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.MessageQueue;
-using Cdcn.Enterprise.Library.Application.Mediator;
+using Cdcn.Enterprise.Library.Application.Mediator.Events;
 using Cdcn.Enterprise.Library.Infrastructure.MessageQueue.AzureQueue.Settings;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;

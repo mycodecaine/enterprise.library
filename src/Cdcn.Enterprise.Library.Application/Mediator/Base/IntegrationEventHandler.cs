@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Cdcn.Enterprise.Library.Application.Mediator.Events;
+using Microsoft.Extensions.Logging;
 
 namespace Cdcn.Enterprise.Library.Application.Mediator.Base
 {

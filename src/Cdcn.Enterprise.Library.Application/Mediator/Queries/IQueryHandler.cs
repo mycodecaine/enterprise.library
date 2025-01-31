@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Cdcn.Enterprise.Library.Application.Mediator
+namespace Cdcn.Enterprise.Library.Application.Mediator.Queries
 {
     /// <summary>
     /// Represents the query interface.

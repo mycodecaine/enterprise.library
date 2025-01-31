@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cdcn.Enterprise.Library.Application.Mediator
+﻿namespace Cdcn.Enterprise.Library.Application.Mediator.Events
 {
+    /// <summary>
+    /// Defines a contract for consuming integration events.
+    /// </summary>
     public interface IIntegrationEventConsumer
     {
         /// <summary>

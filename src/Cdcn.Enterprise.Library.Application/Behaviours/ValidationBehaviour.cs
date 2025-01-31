@@ -1,6 +1,6 @@
 ﻿namespace Cdcn.Enterprise.Library.Application.Behaviours
 {
-    using Cdcn.Enterprise.Library.Application.Mediator;
+    using Cdcn.Enterprise.Library.Application.Mediator.Queries;
     using FluentValidation;
     using FluentValidation.Results;
     using MediatR;

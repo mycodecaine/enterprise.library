@@ -2,7 +2,7 @@
 using Cdcn.Enterprise.Library.Domain.Events;
 using MediatR;
 
-namespace Cdcn.Enterprise.Library.Application.Mediator
+namespace Cdcn.Enterprise.Library.Application.Mediator.Events
 {
     /// <summary>
     /// Represents the marker interface for an integration event.

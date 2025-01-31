@@ -1,4 +1,4 @@
-﻿using Cdcn.Enterprise.Library.Application.Mediator;
+﻿using Cdcn.Enterprise.Library.Application.Mediator.Events;
 
 namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.MessageQueue
 {

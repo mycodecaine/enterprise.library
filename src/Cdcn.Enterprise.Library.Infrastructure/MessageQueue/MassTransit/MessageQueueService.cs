@@ -1,5 +1,5 @@
 ﻿using Cdcn.Enterprise.Library.Application.Core.Abstraction.MessageQueue;
-using Cdcn.Enterprise.Library.Application.Mediator;
+using Cdcn.Enterprise.Library.Application.Mediator.Events;
 using Cdcn.Enterprise.Library.Infrastructure.MessageQueue.MassTransit.Settings;
 using MassTransit;
 using Microsoft.Extensions.Options;

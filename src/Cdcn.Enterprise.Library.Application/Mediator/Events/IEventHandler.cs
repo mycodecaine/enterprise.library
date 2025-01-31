@@ -1,7 +1,7 @@
 ﻿using MediatR;
 
-namespace Cdcn.Enterprise.Library.Application.Mediator
-{ 
+namespace Cdcn.Enterprise.Library.Application.Mediator.Events
+{
     /// <summary>
     /// Represents the event handler interface.
     /// </summary>

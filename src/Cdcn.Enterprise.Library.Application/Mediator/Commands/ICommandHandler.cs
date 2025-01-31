@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Cdcn.Enterprise.Library.Application.Mediator
+namespace Cdcn.Enterprise.Library.Application.Mediator.Commands
 {
     /// <summary>
     /// Represents the command handler interface.

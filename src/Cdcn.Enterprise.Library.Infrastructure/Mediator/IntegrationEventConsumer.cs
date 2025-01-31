@@ -1,4 +1,4 @@
-﻿using Cdcn.Enterprise.Library.Application.Mediator;
+﻿using Cdcn.Enterprise.Library.Application.Mediator.Events;
 using MediatR;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Mediator
