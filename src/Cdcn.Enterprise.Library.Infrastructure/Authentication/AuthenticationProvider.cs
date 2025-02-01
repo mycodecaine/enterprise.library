@@ -31,9 +31,10 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             throw new NotImplementedException();
         }
 
-        public Task<Result<string>> GetAdminAccessToken()
+        public async Task<Result<string>> GetAdminAccessToken()
         {
-            throw new NotImplementedException();
+            var adminToken = await Login(_authenticationSetting.Admin,_authenticationSetting.Password);
+            return adminToken;
         }
 
         public Task<Result<string>> GetRoleIdByNameAsync(string roleName)

@@ -36,7 +36,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
         }
 
         [Test]
-        public async Task Login_ShouldReturnTokenResponse_WhenCredentialsAreValid()
+        public async Task Login_ShouldReturnString_WhenCredentialsAreValid()
         {
             // Arrange
             var username = "testuser";
@@ -100,6 +100,74 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
 
             // Act
             var result = await _authenticationProvider.Login(username, password);
+
+            // Assert
+            Assert.IsTrue(result.IsFailure);
+            Assert.AreEqual(AuthenticationErrors.InvalidUserNameOrPassword, result.Error);
+        }
+
+        [Test]
+        public async Task GetAdminAccessToken_ShouldReturnString_WhenCredentialsAreValid()
+        {
+            // Arrange
+            
+            var accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.SidrxJjWYmR8cviBMT6wLny5TlabpHJ92FxQwMfJxeo";
+            var refreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.SidrxJjWYmR8cviBMT6wLny5TlabpHJ92FxQwMfJxeo";
+
+            var expectedTokenResponse = new
+            {
+                access_token = accessToken,
+                refresh_token = refreshToken,
+                expires_in = 3600,
+                refresh_expires_in = 7200
+            };
+            var responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(expectedTokenResponse))
+            };
+            var httpClientMock = new Mock<HttpMessageHandler>();
+            httpClientMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(responseMessage);
+            var httpClient = new HttpClient(httpClientMock.Object);
+            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+
+            // Act
+            var result = await _authenticationProvider.GetAdminAccessToken();
+
+            // Assert
+            Assert.IsTrue(result.IsSuccess);
+            Assert.IsNotNull(result.Value);
+            var actualResponse = JObject.Parse(result.Value);
+            Assert.AreEqual(actualResponse["expires_in"].ToString(), "3600");
+            Assert.AreEqual(actualResponse["refresh_expires_in"].ToString(), "7200");
+            Assert.AreEqual(actualResponse["access_token"].ToString(), accessToken);
+            Assert.AreEqual(actualResponse["refresh_token"].ToString(), refreshToken);
+
+        }
+
+        [Test]
+        public async Task GetAdminAccessToken_ShouldReturnFailure_WhenCredentialsAreInvalid()
+        {
+            // Arrange           
+            var responseMessage = new HttpResponseMessage(HttpStatusCode.Unauthorized);
+            var httpClientMock = new Mock<HttpMessageHandler>();
+            httpClientMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(responseMessage);
+            var httpClient = new HttpClient(httpClientMock.Object);
+            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+
+            // Act
+            var result = await _authenticationProvider.GetAdminAccessToken();
 
             // Assert
             Assert.IsTrue(result.IsFailure);
