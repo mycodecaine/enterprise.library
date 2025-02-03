@@ -1,4 +1,5 @@
-﻿using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication;
+﻿using Azure.Core;
+using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Contracts;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Events;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Caching;
@@ -8,6 +9,7 @@ using Cdcn.Enterprise.Library.Infrastructure.Authentication.Setting;
 using Cdcn.Enterprise.Library.Infrastructure.Extension;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Json;
 
 namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 {
@@ -26,9 +28,50 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             _logger = logger;
         }
 
-        public Task<Result<string>> CreateUser(string username, string email, string firstName, string lastName, string password)
+         
+
+        public async Task<Result<string>> CreateUser(string username, string email, string firstName, string lastName, string password)
         {
-            throw new NotImplementedException();
+            var client = _httpClientFactory.CreateClientWithPolicy();
+            var userEndpoint = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/users";
+            var accesstoken = await GetAdminAccessToken();
+
+            if (accesstoken.IsFailure)
+            {
+                return Result.Failure<string>(AuthenticationErrors.InvalidAdminToken);
+            }
+
+            var admintoken = accesstoken.Value;
+           
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", admintoken);
+
+            var user = new
+            {
+                username = username,
+                email = email,
+                firstName = firstName,
+                lastName = lastName,
+                enabled = true,
+                credentials = new List<object>
+            {
+                new
+                {
+                    type = "password",
+                    value = password,
+                    temporary = false
+                }
+            }
+            };
+            var response = await client.PostAsJsonAsync(userEndpoint, user);
+            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode)
+            {
+                return await Login(username, password);
+
+            }
+
+            return Result.Failure<string>(AuthenticationErrors.InvalidUserNameOrPassword);
         }
 
         public async Task<Result<string>> GetAdminAccessToken()
@@ -77,9 +120,38 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             return Result.Failure<string>(AuthenticationErrors.InvalidUserNameOrPassword);
         }
 
-        public Task<Result<string>> Login(string refreshToken)
+        public async Task<Result<string>> Login(string refreshToken)
         {
-            throw new NotImplementedException();
+            var client = _httpClientFactory.CreateClientWithPolicy();
+
+            // Specify the token endpoint URL
+            var tokenEndpoint = _authenticationSetting.TokenEndPoint;
+            var formData = new List<KeyValuePair<string, string>>();
+
+            formData.Add(new KeyValuePair<string, string>("client_id", _authenticationSetting.ClientId));
+            formData.Add(new KeyValuePair<string, string>("client_secret", _authenticationSetting.ClientSecret));
+
+            formData.Add(new KeyValuePair<string, string>("grant_type", "refresh_token"));
+            formData.Add(new KeyValuePair<string, string>("refresh_token", refreshToken));
+
+
+
+            var requestContent = new FormUrlEncodedContent(formData);
+
+            // Send a POST request to the token endpoint with the prepared request content
+            var response = await client.PostAsync(tokenEndpoint, requestContent);
+
+            // Check if the request was successful
+            if (response.IsSuccessStatusCode)
+            {
+                // Read the access token from the response content
+                var token = await response.Content.ReadAsStringAsync();
+
+
+                return Result.Success<string>(token);
+            }
+
+            return Result.Failure<string>(AuthenticationErrors.InvalidUserNameOrPassword);
         }
 
         public Task<Result<bool>> ResetPassword(string userName, string password)
