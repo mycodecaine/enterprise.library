@@ -1,5 +1,4 @@
 ﻿using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication;
-using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Contracts;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Events;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Caching;
 using Cdcn.Enterprise.Library.Domain.Primitives.Result;
@@ -10,10 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
-using Moq.Protected;
-using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -58,7 +54,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             _mockLogger = new Mock<ILogger<AuthenticationService>>();
 
             // Create instance of AuthenticationProvider
-            _authenticationService = new AuthenticationService(                
+            _authenticationService = new AuthenticationService(
                 _mockAuthenticationProvider.Object,
                 _mockCachingService.Object,
                 _mockMediator.Object,
@@ -145,7 +141,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
 
             // Assert
             Assert.IsTrue(result.IsFailure);
-           
+
             _mockMediator.Verify(m => m.Publish(It.Is<UserLogedInProviderEvent>(e => e.UserName == "invalidUser" && e.IsAuthenticated == false), default), Times.Once);
         }
 
@@ -253,12 +249,12 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             var email = "testuser@example.com";
             var firstName = "Test";
             var lastName = "User";
-            var password = "password";           
+            var password = "password";
             var userId = Guid.NewGuid().ToString();
             var jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.SidrxJjWYmR8cviBMT6wLny5TlabpHJ92FxQwMfJxeo";
             var mockToken = $"{{\"access_token\": \"{jwtToken}\",\"refresh_token\": \"{jwtToken}\", \"expires_in\": 3600, \"refresh_expires_in\": 7200}}";
-            
-          
+
+
             _mockAuthenticationProvider.Setup(x => x.IsUserNameExist(username))
                 .ReturnsAsync(Result.Success(false));
             _mockAuthenticationProvider.Setup(x => x.GetAdminAccessToken())
@@ -274,8 +270,6 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             // Assert
             Assert.IsTrue(result.IsSuccess);
         }
-        
+
     }
-
-
 }

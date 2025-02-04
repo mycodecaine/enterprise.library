@@ -1,19 +1,10 @@
-﻿using Cdcn.Enterprise.Library.Infrastructure.Authentication.Setting;
+﻿using Cdcn.Enterprise.Library.Application.Core.Services;
 using Cdcn.Enterprise.Library.Infrastructure.Authentication;
+using Cdcn.Enterprise.Library.Infrastructure.Authentication.Setting;
 using Microsoft.Extensions.Logging;
-using Moq.Protected;
 using Moq;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Contracts;
-using Cdcn.Enterprise.Library.Infrastructure.Extension;
-using Polly.Caching;
-using Cdcn.Enterprise.Library.Application.Core.Services;
 
 namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
 {
