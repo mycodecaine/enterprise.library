@@ -10,27 +10,26 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
     public class AuthenticationProvider : IAuthenticationProvider
     {
         private readonly AuthenticationSetting _authenticationSetting;
-        private readonly IHttpService _httpService; 
-        private ILogger<AuthenticationProvider> _logger;        
+        private readonly IHttpService _httpService;
+        private ILogger<AuthenticationProvider> _logger;
 
         public AuthenticationProvider(AuthenticationSetting authenticationSetting, IHttpService httpService, ILogger<AuthenticationProvider> logger)
         {
             _authenticationSetting = authenticationSetting;
             _httpService = httpService;
             _logger = logger;
-        } 
+        }
 
         public async Task<Result<string>> CreateUser(string username, string email, string firstName, string lastName, string password)
         {
-            
             var userEndpoint = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/users";
             var accesstoken = await GetAdminAccessToken();
             if (accesstoken.IsFailure)
             {
                 return Result.Failure<string>(AuthenticationErrors.InvalidAdminToken);
             }
-            var admintoken = accesstoken.Value;      
-           
+            var admintoken = accesstoken.Value;
+
             var user = new
             {
                 username = username,
@@ -53,7 +52,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             if (response.IsSuccessStatusCode)
             {
                 return await Login(username, password);
-
             }
 
             return Result.Failure<string>(AuthenticationErrors.InvalidUserNameOrPassword);
@@ -61,7 +59,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
         public async Task<Result<string>> GetAdminAccessToken()
         {
-            var adminToken = await Login(_authenticationSetting.Admin,_authenticationSetting.Password);
+            var adminToken = await Login(_authenticationSetting.Admin, _authenticationSetting.Password);
             return adminToken;
         }
 
@@ -87,7 +85,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
         public Task<Result<string>> GetRoleIdByNameAsync(string roleName)
         {
-           
             throw new NotImplementedException();
         }
 
@@ -104,7 +101,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
         public async Task<Result<string>> Login(string username, string password)
         {
-           
             // Specify the token endpoint URL
             var tokenEndpoint = _authenticationSetting.TokenEndPoint;
             var formData = new List<KeyValuePair<string, string>>();
@@ -116,9 +112,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             formData.Add(new KeyValuePair<string, string>("username", username));
             formData.Add(new KeyValuePair<string, string>("password", password));
 
-
-
-           
             // Send a POST request to the token endpoint with the prepared request content
             var response = await _httpService.PostAsync(tokenEndpoint, formData);
 
@@ -127,7 +120,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             {
                 // Read the access token from the response content
                 var token = await response.Content.ReadAsStringAsync();
-                
 
                 return Result.Success<string>(token);
             }
@@ -137,7 +129,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
         public async Task<Result<string>> Login(string refreshToken)
         {
-          
             // Specify the token endpoint URL
             var tokenEndpoint = _authenticationSetting.TokenEndPoint;
             var formData = new List<KeyValuePair<string, string>>();
@@ -148,9 +139,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             formData.Add(new KeyValuePair<string, string>("grant_type", "refresh_token"));
             formData.Add(new KeyValuePair<string, string>("refresh_token", refreshToken));
 
-
-
-          
             // Send a POST request to the token endpoint with the prepared request content
             var response = await _httpService.PostAsync(tokenEndpoint, formData);
 
@@ -159,7 +147,6 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
             {
                 // Read the access token from the response content
                 var token = await response.Content.ReadAsStringAsync();
-
 
                 return Result.Success<string>(token);
             }
@@ -189,8 +176,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 
             // Check if the request was successful
             if (response.IsSuccessStatusCode)
-            {              
-
+            {
                 return Result.Success<bool>(true);
             }
             return Result.Success<bool>(false);
