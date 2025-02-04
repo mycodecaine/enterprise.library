@@ -55,6 +55,6 @@ namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication
         /// <param name="userName">The username of the user.</param>
         /// <param name="roleName">The name of the role to assign.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="Result{bool}"/> indicating whether the role assignment was successful.</returns>
-        Task<Result<bool>> AssignRole(string userName, string roleName);
+        // Task<Result<bool>> AssignRole(string userName, string roleName);
     }
 }

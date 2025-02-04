@@ -59,5 +59,19 @@ namespace Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication
         /// <param name="refreshToken">The refresh token.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the token response.</returns>
         Task<Result<string>> Login(string refreshToken);
+
+        /// <summary>
+        /// Gets the user ID by username.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        Task<Result<string>> GetIdByUserName(string userName);
+
+        /// <summary>
+        /// Validate username is exist or not
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        Task<Result<bool>> IsUserNameExist(string userName);
     }
 }

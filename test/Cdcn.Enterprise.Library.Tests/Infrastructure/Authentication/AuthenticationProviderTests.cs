@@ -13,13 +13,14 @@ using System.Threading.Tasks;
 using Cdcn.Enterprise.Library.Application.Core.Abstraction.Authentication.Contracts;
 using Cdcn.Enterprise.Library.Infrastructure.Extension;
 using Polly.Caching;
+using Cdcn.Enterprise.Library.Application.Core.Services;
 
 namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
 {
     [TestFixture]
     public class AuthenticationProviderTests
     {
-        private Mock<IHttpClientFactory> _httpClientFactoryMock;
+        private Mock<IHttpService> _httpServiceMock;
         private Mock<ILogger<AuthenticationProvider>> _loggerMock;
         private AuthenticationSetting _authenticationSetting;
         private AuthenticationProvider _authenticationProvider;
@@ -27,7 +28,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
         [SetUp]
         public void SetUp()
         {
-            _httpClientFactoryMock = new Mock<IHttpClientFactory>();
+            _httpServiceMock = new Mock<IHttpService>();
             _loggerMock = new Mock<ILogger<AuthenticationProvider>>();
             _authenticationSetting = new AuthenticationSetting
             {
@@ -37,7 +38,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
                 BaseUrl = "https://example.com",
                 RealmName = "test-realm",
             };
-            _authenticationProvider = new AuthenticationProvider(_authenticationSetting, _httpClientFactoryMock.Object, _loggerMock.Object);
+            _authenticationProvider = new AuthenticationProvider(_authenticationSetting, _httpServiceMock.Object, _loggerMock.Object);
         }
 
         [Test]
@@ -60,17 +61,9 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             {
                 Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(expectedTokenResponse))
             };
-            var httpClientMock = new Mock<HttpMessageHandler>();
-            httpClientMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(responseMessage);
-            var httpClient = new HttpClient(httpClientMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+            _httpServiceMock.Setup(service => service.PostAsync(It.IsAny<string>(), It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>())).ReturnsAsync(responseMessage);          
 
+           
             // Act
             var result = await _authenticationProvider.Login(username, password);
 
@@ -92,16 +85,8 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             var username = "invaliduser";
             var password = "invalidpassword";
             var responseMessage = new HttpResponseMessage(HttpStatusCode.Unauthorized);
-            var httpClientMock = new Mock<HttpMessageHandler>();
-            httpClientMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(responseMessage);
-            var httpClient = new HttpClient(httpClientMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+            _httpServiceMock.Setup(service => service.PostAsync(It.IsAny<string>(), It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>())).ReturnsAsync(responseMessage);
+
 
             // Act
             var result = await _authenticationProvider.Login(username, password);
@@ -129,16 +114,8 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             {
                 Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(expectedTokenResponse))
             };
-            var httpClientMock = new Mock<HttpMessageHandler>();
-            httpClientMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(responseMessage);
-            var httpClient = new HttpClient(httpClientMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+            _httpServiceMock.Setup(service => service.PostAsync(It.IsAny<string>(), It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>())).ReturnsAsync(responseMessage);
+
 
             // Act
             var result = await _authenticationProvider.GetAdminAccessToken();
@@ -159,16 +136,8 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
         {
             // Arrange           
             var responseMessage = new HttpResponseMessage(HttpStatusCode.Unauthorized);
-            var httpClientMock = new Mock<HttpMessageHandler>();
-            httpClientMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(responseMessage);
-            var httpClient = new HttpClient(httpClientMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+            _httpServiceMock.Setup(service => service.PostAsync(It.IsAny<string>(), It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>())).ReturnsAsync(responseMessage);
+
 
             // Act
             var result = await _authenticationProvider.GetAdminAccessToken();
@@ -196,16 +165,8 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             {
                 Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(expectedTokenResponse))
             };
-            var httpClientMock = new Mock<HttpMessageHandler>();
-            httpClientMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(responseMessage);
-            var httpClient = new HttpClient(httpClientMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+            _httpServiceMock.Setup(service => service.PostAsync(It.IsAny<string>(), It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>())).ReturnsAsync(responseMessage);
+
 
             // Act
             var result = await _authenticationProvider.Login(refreshToken);
@@ -227,16 +188,7 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             var refreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.SidrxJjWYmR8cviBMT6wLny5TlabpHJ92FxQwMfJxeo";
 
             var responseMessage = new HttpResponseMessage(HttpStatusCode.Unauthorized);
-            var httpClientMock = new Mock<HttpMessageHandler>();
-            httpClientMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(responseMessage);
-            var httpClient = new HttpClient(httpClientMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+            _httpServiceMock.Setup(service => service.PostAsync(It.IsAny<string>(), It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>())).ReturnsAsync(responseMessage);
 
             // Act
             var result = await _authenticationProvider.Login(refreshToken);
@@ -271,18 +223,8 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
             {
                 Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(expectedTokenResponse))
             };
-            var httpClientMock = new Mock<HttpMessageHandler>();
-            httpClientMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.AbsoluteUri == _authenticationSetting.TokenEndPoint),
-                ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(responseMessage);
-            var httpClient = new HttpClient(httpClientMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+            _httpServiceMock.Setup(service => service.PostAsync(It.IsAny<string>(), It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>())).ReturnsAsync(responseMessage);
 
-            var createUserUrl = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/users";
 
             // Mock the HTTP response for user creation
             var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
@@ -308,17 +250,8 @@ namespace Cdcn.Enterprise.Library.Tests.Infrastructure.Authentication
 
             var userJson = Newtonsoft.Json.JsonConvert.SerializeObject(user);
 
-            mockHttpMessageHandler
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),                   
-                    ItExpr.IsAny<CancellationToken>()
-                )
-                .ReturnsAsync(httpResponseMessage);
+            _httpServiceMock.Setup(service => service.PostJsonAsync(It.IsAny<string>(),It.IsAny<Object>(), It.IsAny<string>())).ReturnsAsync(responseMessage);
 
-            var httpCreateClient = new HttpClient(mockHttpMessageHandler.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpCreateClient);
 
             // Act
             var result = await _authenticationProvider.CreateUser("testuser", "test@example.com", "Test", "User", "password");

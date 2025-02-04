@@ -19,17 +19,17 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly AuthenticationSetting _authenticationSetting;
-        private readonly IHttpClientFactory _httpClientFactory;
+        
+        private readonly IAuthenticationProvider _authenticationProvider;
         private readonly ICacheService _cachingService;
         private readonly IMediator _mediator;
-        private const string Authencticate = "authenticate-";
+        private const string Authencticate = "authenticate-admin";
         private ILogger<AuthenticationService> _logger;
 
-        public AuthenticationService(IOptions<AuthenticationSetting> authenticationSetting, IHttpClientFactory httpClientFactory, ICacheService cachingService, IMediator mediator, ILogger<AuthenticationService> logger)
+        public AuthenticationService( IAuthenticationProvider authenticationProvider, ICacheService cachingService, IMediator mediator, ILogger<AuthenticationService> logger)
         {
-            _authenticationSetting = authenticationSetting.Value;
-            _httpClientFactory = httpClientFactory;
+           
+            _authenticationProvider = authenticationProvider;
             _cachingService = cachingService;
             _mediator = mediator;
             _logger = logger;
@@ -40,14 +40,19 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
         /// <returns>Token</returns>
         protected async Task<Result<string>> GetAdminAccessToken()
         {
-            var key = Authencticate + _authenticationSetting.Admin;
+            var key = Authencticate;
             try
             {
                 if (!_cachingService.CacheItemExists(key))
                 {
-                    var data = await Login(_authenticationSetting.Admin, _authenticationSetting.Password);
-                    _cachingService.SetCacheItem(key, JsonConvert.SerializeObject(data, Formatting.Indented));
-                    return Result.Success<string>(data.Value.Token);
+                    var data = await _authenticationProvider.GetAdminAccessToken();
+                    if ( data.IsFailure)
+                    {
+                        return Result.Failure<string>(AuthenticationErrors.InvalidAdminToken);
+                    }
+                    _cachingService.SetCacheItem(key, data.Value);
+                    var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(data.Value);
+                    return Result.Success<string>(tokenResponse.Token);
                 }
 
                 var adminTokenJson = _cachingService.GetCacheItem(key);
@@ -59,16 +64,16 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
                     return Result.Success<string>(token.Token);
                 }
 
-                var newToken = await Login(_authenticationSetting.Admin, _authenticationSetting.Password);
+                var newAdminToken = await _authenticationProvider.GetAdminAccessToken();
 
-                if (newToken.IsFailure)
+                if (newAdminToken.IsFailure)
                 {
                     return Result.Failure<string>(AuthenticationErrors.InvalidAdminToken);
                 }
 
-                _cachingService.SetCacheItem(key, JsonConvert.SerializeObject(newToken, Formatting.Indented));
-
-                return Result.Success<string>(newToken.Value.Token);
+                _cachingService.SetCacheItem(key, newAdminToken.Value);
+                var newtoken = JsonConvert.DeserializeObject<TokenResponse>(newAdminToken.Value);
+                return Result.Success<string>(newtoken.Token);
             }
             catch (TimeoutRejectedException ex)
             {
@@ -86,30 +91,9 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
         /// <param name="roleName"></param>
         /// <returns></returns>
         protected async Task<Result<string>> GetRoleIdByNameAsync(string roleName)
-        {
-            var client = _httpClientFactory.CreateClientWithPolicy();
-            var userEndpoint = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/roles/{roleName}";
-            var accesstoken = await GetAdminAccessToken();
+        {               
 
-            if (accesstoken.IsFailure)
-            {
-                return Result.Failure<string>(AuthenticationErrors.InvalidAdminToken);
-            }
-
-            var admintoken = accesstoken.Value;
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", admintoken);
-
-            var response = await client.GetAsync(userEndpoint);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return Result.Failure<string>(AuthenticationErrors.InvalidAssignRole);
-            }
-
-            var json = await response.Content.ReadAsStringAsync();
-            var role = JObject.Parse(json);
-
-            return Result.Success<string>(role["id"].ToString());
+            return await _authenticationProvider.GetRoleIdByNameAsync(roleName);
         }
         /// <summary>
         /// Base login method
@@ -118,54 +102,49 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
         /// <param name="password"></param>
         /// <param name="refreshtoken"></param>
         /// <returns></returns>
-       virtual protected async Task<Result<TokenResponse>> BaseLogin(string username, string password, string refreshtoken = "")
+        virtual protected async Task<Result<TokenResponse>> BaseLogin(string username, string password, string refreshtoken = "")
         {
-            var client = _httpClientFactory.CreateClientWithPolicy();
 
-            // Specify the token endpoint URL
-            var tokenEndpoint = _authenticationSetting.TokenEndPoint;
-            var formData = new List<KeyValuePair<string, string>>();
-
-            formData.Add(new KeyValuePair<string, string>("client_id", _authenticationSetting.ClientId));
-            formData.Add(new KeyValuePair<string, string>("client_secret", _authenticationSetting.ClientSecret));
+            var token = "";
             if (string.IsNullOrEmpty(refreshtoken))
             {
-                formData.Add(new KeyValuePair<string, string>("grant_type", "password"));
-                formData.Add(new KeyValuePair<string, string>("username", username));
-                formData.Add(new KeyValuePair<string, string>("password", password));
+                var loginWithUserName = await _authenticationProvider.Login(username, password);
+
+                if (loginWithUserName.IsFailure)
+                {
+                    await _mediator.Publish(new UserLogedInProviderEvent(username, false, ""));
+                    return Result.Failure<TokenResponse>(AuthenticationErrors.InvalidUserNameOrPassword);
+                }
+                token = loginWithUserName.Value;
             }
 
             if (!string.IsNullOrEmpty(refreshtoken))
             {
-                formData.Add(new KeyValuePair<string, string>("grant_type", "refresh_token"));
-                formData.Add(new KeyValuePair<string, string>("refresh_token", refreshtoken));
+                var loginWithRefreshToken = await _authenticationProvider.Login(refreshtoken);
+                if (loginWithRefreshToken.IsFailure)
+                {
+                    await _mediator.Publish(new UserLogedInProviderEvent(username, false, ""));
+                    return Result.Failure<TokenResponse>(AuthenticationErrors.InvalidUserNameOrPassword);
+                }
+                token = loginWithRefreshToken.Value;
+
             }
 
-            var requestContent = new FormUrlEncodedContent(formData);
-
-            // Send a POST request to the token endpoint with the prepared request content
-            var response = await client.PostAsync(tokenEndpoint, requestContent);
-
-            // Check if the request was successful
-            if (response.IsSuccessStatusCode)
+            JObject content = JObject.Parse(token);
+            var expiresIn = int.Parse(content["expires_in"].ToString());
+            var refreshexpiresIn = int.Parse(content["refresh_expires_in"].ToString());
+            var tokenExpired = DateTime.UtcNow.AddSeconds(expiresIn);
+            var refreshtokenExpired = DateTime.UtcNow.AddSeconds(refreshexpiresIn);
+            var accessToken = content["access_token"].ToString();
+            var sub = JwtHelper.GetSubId(accessToken);
+            if (sub == Guid.Empty)
             {
-                // Read the access token from the response content
-                var token = await response.Content.ReadAsStringAsync();
-                JObject content = JObject.Parse(token);
-                var expiresIn = int.Parse(content["expires_in"].ToString());
-                var refreshexpiresIn = int.Parse(content["refresh_expires_in"].ToString());
-                var tokenExpired = DateTime.UtcNow.AddSeconds(expiresIn);
-                var refreshtokenExpired = DateTime.UtcNow.AddSeconds(refreshexpiresIn);
-                var accessToken = content["access_token"].ToString();
-                var sub = JwtHelper.GetSubId(accessToken);
-                if(sub == Guid.Empty)
-                   return Result.Failure<TokenResponse>(AuthenticationErrors.SubIdNotExist);
-                var newtoken = new TokenResponse(accessToken, content["refresh_token"].ToString(), tokenExpired, refreshtokenExpired, sub);
-                await _mediator.Publish(new UserLogedInProviderEvent(username, true, ""));
-                return Result.Success<TokenResponse>(newtoken);
+                await _mediator.Publish(new UserLogedInProviderEvent(username, false, ""));
+                return Result.Failure<TokenResponse>(AuthenticationErrors.SubIdNotExist);                
             }
-            await _mediator.Publish(new UserLogedInProviderEvent(username, false, ""));
-            return Result.Failure<TokenResponse>(AuthenticationErrors.InvalidUserNameOrPassword);
+            var newtoken = new TokenResponse(accessToken, content["refresh_token"].ToString(), tokenExpired, refreshtokenExpired, sub);
+            await _mediator.Publish(new UserLogedInProviderEvent(username, true, ""));
+            return Result.Success<TokenResponse>(newtoken);
         }
 
         public async Task<Result<TokenResponse>> Login(string username, string password)
@@ -181,25 +160,17 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
         public async Task<Result<TokenResponse>> CreateUser(string username, string email, string firstName, string lastName, string password)
         {
 
-            var userNameVerify = await GetIdByUserName(username);
-            if (userNameVerify.IsSuccess)
+            var userNameVerify = await _authenticationProvider.IsUserNameExist(username);
+            if (userNameVerify.IsSuccess && userNameVerify.Value)
             {
                 return Result.Failure<TokenResponse>(AuthenticationErrors.UserNameAlreadyExist);
-            }
-
-            var client = _httpClientFactory.CreateClientWithPolicy();
-            var userEndpoint = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/users";
+            }            
             var  accesstoken = await GetAdminAccessToken();
-
             if (accesstoken.IsFailure)
             {
                 return Result.Failure<TokenResponse>(AuthenticationErrors.InvalidAdminToken);
             }
-
             var admintoken = accesstoken.Value;
-
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", admintoken);
-
             var user = new
             {
                 username = username,
@@ -217,45 +188,22 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
                 }
             }
             };
-            var response = await client.PostAsJsonAsync(userEndpoint, user);
-            response.EnsureSuccessStatusCode();
-            if (response.IsSuccessStatusCode)
+            var response = await _authenticationProvider.CreateUser(username, email, firstName, lastName, password);
+            
+            if (response.IsSuccess)
             {
                 return await Login(username, password);
               
             }
-
             return Result.Failure<TokenResponse>(AuthenticationErrors.InvalidUserNameOrPassword);
         }
         public async Task<Result<string>> GetIdByUserName(string userName)
-        {
-            var client = _httpClientFactory.CreateClientWithPolicy();
-            var userEndpoint = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/users?username={userName}";
-            var accesstoken = await GetAdminAccessToken();
-
-            if (accesstoken.IsFailure)
-            {
-                return Result.Failure<string>(AuthenticationErrors.InvalidAdminToken);
-            }
+        {           
 
             try
             {
-
-                var admintoken = accesstoken.Value;
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", admintoken);
-
-                var response = await client.GetAsync(userEndpoint);
-                response.EnsureSuccessStatusCode();
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var users = JArray.Parse(responseContent);
-
-                if (users.Count == 1)
-                {
-                    return Result.Success<string>(users[0]["id"].ToString());
-                }
-
-                return Result.Failure<string>(AuthenticationErrors.InvalidUserNameOrPassword);
+               var response = await _authenticationProvider.GetIdByUserName(userName);
+               return response;
             }
             catch (TimeoutRejectedException ex)
             {
@@ -269,23 +217,7 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
         }
         public async Task<Result<bool>> ResetPassword(string userName, string password)
         {
-            var client = _httpClientFactory.CreateClientWithPolicy();
-            var userId = await GetIdByUserName(userName.Trim());
 
-            if (userId.IsFailure) {
-                return Result.Failure<bool>(AuthenticationErrors.InvalidUserNameOrPassword);
-            }
-            var userEndpoint = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/users/{userId}/reset-password";
-            
-            var accesstoken = await GetAdminAccessToken();
-
-            if (accesstoken.IsFailure)
-            {
-                return Result.Failure<bool>(AuthenticationErrors.InvalidAdminToken);
-            }
-
-            var admintoken = accesstoken.Value;
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", admintoken);
 
             var requestData = new
             {
@@ -294,60 +226,54 @@ namespace Cdcn.Enterprise.Library.Infrastructure.Authentication
                 value = password
             };
 
-            var response = await client.PutAsJsonAsync(userEndpoint, requestData);
-            response.EnsureSuccessStatusCode();
-            if (response.IsSuccessStatusCode)
-            {
-                return Result.Success<bool>(true);
-            }
-
-            return Result.Failure<bool>(AuthenticationErrors.ResetPasswordError);
+            var response = await _authenticationProvider.ResetPassword(userName, password);
+            return response;
         }
-        public async Task<Result<bool>> AssignRole(string userName, string roleName)
-        {
-            var client = _httpClientFactory.CreateClientWithPolicy();
-            var userId = await GetIdByUserName(userName.Trim());
-            if (string.IsNullOrEmpty(userId.Value))
-            {
-                return false;
-            }
+        //public async Task<Result<bool>> AssignRole(string userName, string roleName)
+        //{
+        //    var client = _authenticationProvider.CreateClientWithPolicy();
+        //    var userId = await GetIdByUserName(userName.Trim());
+        //    if (string.IsNullOrEmpty(userId.Value))
+        //    {
+        //        return false;
+        //    }
 
-            var userEndpoint = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/users/{userId}/role-mappings/realm";
+        //    var userEndpoint = $"{_authenticationSetting.BaseUrl}/admin/realms/{_authenticationSetting.RealmName}/users/{userId}/role-mappings/realm";
 
-            var roleId = await GetRoleIdByNameAsync(roleName.Trim());
+        //    var roleId = await GetRoleIdByNameAsync(roleName.Trim());
 
-            if (roleId.IsFailure)
-            {
-                return Result.Failure<bool>(AuthenticationErrors.InvalidAdminToken);
-            }   
+        //    if (roleId.IsFailure)
+        //    {
+        //        return Result.Failure<bool>(AuthenticationErrors.InvalidAdminToken);
+        //    }   
 
-            var accesstoken = await GetAdminAccessToken();
+        //    var accesstoken = await GetAdminAccessToken();
 
-            if (accesstoken.IsFailure)
-            {
-                return Result.Failure<bool>(AuthenticationErrors.InvalidAdminToken);
-            }
+        //    if (accesstoken.IsFailure)
+        //    {
+        //        return Result.Failure<bool>(AuthenticationErrors.InvalidAdminToken);
+        //    }
 
-            var admintoken = accesstoken.Value;
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", admintoken);
+        //    var admintoken = accesstoken.Value;
+        //    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", admintoken);
 
-            var roleRepresentation = new List<object>
-            {
-                new
-                {
-                    id = roleId,
-                    name = roleName
-                }
-            };
+        //    var roleRepresentation = new List<object>
+        //    {
+        //        new
+        //        {
+        //            id = roleId,
+        //            name = roleName
+        //        }
+        //    };
 
-            var response = await client.PostAsJsonAsync(userEndpoint, roleRepresentation);
-            response.EnsureSuccessStatusCode();
-            if (response.IsSuccessStatusCode)
-            {
-                return Result.Success<bool>(true);
-            }
+        //    var response = await client.PostAsJsonAsync(userEndpoint, roleRepresentation);
+        //    response.EnsureSuccessStatusCode();
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        return Result.Success<bool>(true);
+        //    }
 
-            return Result.Failure<bool>(AuthenticationErrors.AssignRoleNotSuccessfull);
-        }
+        //    return Result.Failure<bool>(AuthenticationErrors.AssignRoleNotSuccessfull);
+        //}
     }
 }
