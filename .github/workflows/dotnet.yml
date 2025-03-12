@@ -35,6 +35,14 @@ jobs:
       run: reportgenerator "-reports:**/TestResults/**/coverage.cobertura.xml" "-targetdir:coveragereport" -reporttypes:Html
       env:
         PATH: ${{ env.PATH }}:/home/runner/.dotnet/tools
+        
+    - name: Generate Coverage Summary for Console
+      run: reportgenerator "-reports:**/TestResults/**/coverage.cobertura.xml" "-targetdir:coveragesummary" -reporttypes:TextSummary
+      env:
+        PATH: ${{ env.PATH }}:/home/runner/.dotnet/tools
+
+    - name: Display Coverage Summary
+      run: cat coveragesummary/Summary.txt
 
     - name: Upload Code Coverage Report
       if: success()
