@@ -38,8 +38,8 @@ jobs:
 
     - name: Display Coverage in Console
       run: |
-           reportgenerator "-reports:**/TestResults/**/coverage.cobertura.xml" "-targetdir:coveragereport" -reporttypes:TextSummary
-           cat coveragereport/Summary.txt
+        reportgenerator "-reports:**/TestResults/**/coverage.cobertura.xml" "-targetdir:coveragereport" -reporttypes:TextSummary
+        cat coveragereport/Summary.txt
       env:
         PATH: ${{ env.PATH }}:/home/runner/.dotnet/tools
 
