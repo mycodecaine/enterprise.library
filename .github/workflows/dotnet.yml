@@ -36,6 +36,12 @@ jobs:
       env:
         PATH: ${{ env.PATH }}:/home/runner/.dotnet/tools
 
+    - name: Display Coverage in Console
+      run: reportgenerator "-reports:**/TestResults/**/coverage.cobertura.xml" "-targetdir:coveragereport" -reporttypes:TextSummary
+           cat coveragereport/Summary.txt
+      env:
+        PATH: ${{ env.PATH }}:/home/runner/.dotnet/tools
+
     - name: Upload Code Coverage Report
       if: success()
       uses: actions/upload-artifact@v4
